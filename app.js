@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // Middleware to serve static files from the 'public' folder
-app.use(express.static(path.join(__dirname, 'public', 'MainUI')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 // Simple route for the home page
