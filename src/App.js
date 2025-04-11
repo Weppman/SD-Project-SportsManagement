@@ -1,31 +1,24 @@
-// src/pages/TestPage.js (renaming from test.ui.js is optional but cleaner)
-import React, { useState } from 'react';
-import '../MainUIComponents/style.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import IssuePage from './Issue page and assoicated stuff/Issues'; // optional if you have a homepage
+import TestPage from './MainUiComponents/testMainUI';
 
-const TestPage = () => {
-  const [buttonText, setButtonText] = useState("Click me");
-
-  const getButtonHandlers = () => {
-    const handleClick = () => alert("Clicked!");
-    const handleHover = () => setButtonText("Hovering");
-
-    return { handleClick, handleHover };
-  };
-
-  const { handleClick, handleHover } = getButtonHandlers();
-
+function App() {
   return (
-    <section>
-      <h1>Test</h1>
-      <button
-        onClick={handleClick}
-        onMouseEnter={handleHover}
-        onMouseLeave={() => setButtonText('Interact Me')}
-      >
-        {buttonText}
-      </button>
-    </section>
-  );
-};
+    <Router>
+      <nav>
+        <ul>
+          <li><Link to="/">Issue Page</Link></li>
+          <li><Link to="/test">Test Page</Link></li>
+        </ul>
+      </nav>
 
-export default TestPage;
+      <Routes>
+        <Route path="/" element={<IssuePage />} />
+        <Route path="/test" element={<TestPage />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
