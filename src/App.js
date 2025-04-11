@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import IssuePage from './Issue page and assoicated stuff/Issues'; // optional if you have a homepage
-import TestPage from './MainUiComponents/testMainUI';
+import TestPage from './MainUIComponents/testMainUI';
 
 function App() {
   return (
