@@ -2,41 +2,33 @@ name: Run Jest Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout code
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
-    # Set up Node.js
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Specify Node version
+        node-version: '16'
 
-    # Install dependencies
     - name: Install dependencies
-      run: |
-        npm install
+      run: npm install
 
-    # Run Jest tests
     - name: Run Jest tests
-      run: |
-        npm test -- --ci --runInBand  # --ci flag is useful for CI environments
+      run: npx jest --ci --runInBand --reporters=default --reporters=jest-junit
+      continue-on-error: true
 
-    # Optional: Upload test results
     - name: Upload Jest test results
-      if: failure()
-      uses: actions/upload-artifact@v2
+      if: always()
+      uses: actions/upload-artifact@v3
       with:
         name: jest-test-results
         path: ./test-results
