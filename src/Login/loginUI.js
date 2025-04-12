@@ -2,6 +2,7 @@ import React from 'react';
 import AuthForm from './emailAuth';
 import GoogleSignIn from './googleAuth';
 
+
 const Login = () => {
   return (
     <sect>
