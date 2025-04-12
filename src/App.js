@@ -8,20 +8,20 @@ import LoginPage from './Login/loginUI';
 function App() {
   return (
     <Router>
-      <nav>
+
         <ul>
-          <li><Link to="/">Issue Page</Link></li>
+          <li><Link to="/issues">Issue Page</Link></li>
           <li><Link to="/test">Test Page</Link></li>
           <li><Link to="/bookings">Bookings Page</Link></li>
-          <li><Link to="/login">Login Page</Link></li>
+          <li><Link to="/">Login Page</Link></li>
         </ul>
-      </nav>
+
 
       <Routes>
-        <Route path="/" element={<IssuePage />} />
+        <Route path="/issues" element={<IssuePage />} />
         <Route path="/test" element={<TestPage />} />
         <Route path="/bookings" element={<BookingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
       </Routes>
     </Router>
   );
