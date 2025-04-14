@@ -11,7 +11,7 @@ const GoogleSignIn = () => {
         try {
           const result = await signInWithPopup(auth, googleProvider);
           if (result.user) {
-            navigate('/test');  
+            navigate('/home');  
           }
         } catch (error) {
           console.error(error);
