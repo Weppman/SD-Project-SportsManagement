@@ -4,6 +4,8 @@ import IssuePage from './Issue page and assoicated stuff/Issues'; // optional if
 import TestPage from './MainUIComponents/testMainUI';
 import BookingPage from './Bookings/bookingForm';
 import LoginPage from './Login/loginUI';
+import HomePage from './HomePage/homePage';
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
           <li><Link to="/test">Test Page</Link></li>
           <li><Link to="/bookings">Bookings Page</Link></li>
           <li><Link to="/">Login Page</Link></li>
+          <li><Link to="/home">Home Page</Link></li>
         </ul>
 
 
@@ -22,6 +25,7 @@ function App() {
         <Route path="/test" element={<TestPage />} />
         <Route path="/bookings" element={<BookingPage />} />
         <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<HomePage />} />
       </Routes>
     </Router>
   );
