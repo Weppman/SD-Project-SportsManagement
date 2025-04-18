@@ -4,20 +4,16 @@ import Toolbar from '../ToolBar/toolBar'; // Assuming you have a toolbar compone
 export default function Users() {
   const [users, setUsers] = useState([
     // Example users (You would fetch these from an API or database)
-    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+    { id: 1, role: 'Admin' },
+    { id: 2, role: 'User' },
     // Add more user entries as needed
   ]);
   const [selectedUser, setSelectedUser] = useState(null); // To store the selected user for editing
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
 
   // Handle row click to select a user
   const handleRowClick = (user) => {
     setSelectedUser(user);
-    setName(user.name);
-    setEmail(user.email);
     setRole(user.role);
   };
 
@@ -25,7 +21,7 @@ export default function Users() {
   const handleUpdate = () => {
     if (!selectedUser) return;
 
-    const updatedUser = { ...selectedUser, name, email, role };
+    const updatedUser = { ...selectedUser, role };
     
     setUsers((prev) =>
       prev.map((user) => (user.id === selectedUser.id ? updatedUser : user))
@@ -33,8 +29,6 @@ export default function Users() {
 
     // Clear selected user and form
     setSelectedUser(null);
-    setName('');
-    setEmail('');
     setRole('');
   };
 
@@ -48,8 +42,7 @@ export default function Users() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}>Name</th>
-                <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}>Email</th>
+                <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}>ID</th>
                 <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}>Role</th>
               </tr>
             </thead>
@@ -63,8 +56,7 @@ export default function Users() {
                     backgroundColor: selectedUser?.id === user.id ? '#f0f0f0' : 'white',
                   }}
                 >
-                  <td style={{ padding: '0.5rem' }}>{user.name}</td>
-                  <td style={{ padding: '0.5rem' }}>{user.email}</td>
+                  <td style={{ padding: '0.5rem' }}>{user.id}</td>
                   <td style={{ padding: '0.5rem' }}>{user.role}</td>
                 </tr>
               ))}
@@ -84,26 +76,6 @@ export default function Users() {
           <h2>{selectedUser ? 'Update User' : 'Select a User to Update'}</h2>
           {selectedUser && (
             <>
-              <section style={{ marginBottom: '1rem' }}>
-                <label htmlFor="name">Name:</label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  style={{ marginTop: '0.5rem', width: '100%', padding: '0.5rem', border: '1px solid #ccc', boxSizing: 'border-box' }}
-                />
-              </section>
-              <section style={{ marginBottom: '1rem' }}>
-                <label htmlFor="email">Email:</label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{ marginTop: '0.5rem', width: '100%', padding: '0.5rem', border: '1px solid #ccc', boxSizing: 'border-box' }}
-                />
-              </section>
               <section style={{ marginBottom: '1rem' }}>
                 <label htmlFor="role">Role:</label>
                 <input
