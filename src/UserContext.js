@@ -5,7 +5,7 @@ const UserContext = createContext();
 
 // Create a provider component
 export const UserProvider = ({ children }) => {
-  const [userType, setUserType] = useState('staff'); // Default userType is 'user'
+  const [userType, setUserType] = useState('admin'); // Default userType is 'user'
 
   return (
     <UserContext.Provider value={{ userType, setUserType }}>
