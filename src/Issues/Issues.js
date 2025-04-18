@@ -8,8 +8,8 @@ export default function Issues() {
   const [description, setDescription] = useState('');
   const [facility, setFacility] = useState(''); // Added state for facility
   const [issues, setIssues] = useState([]);
-  const [update, setUpdate] = useState('');
-  const [issue_status, setIssue_status] = useState('');
+  //const [update, setUpdate] = useState('');
+  //const [issue_status, setIssue_status] = useState('');
 
   const [filterDate, setFilterDate] = useState(''); // State for filter by date
   const [filterFacility, setFilterFacility] = useState(''); // State for filter by facility
@@ -25,8 +25,8 @@ export default function Issues() {
       facility,
       type: issueType,
       description,
-      update,
-      issue_status,
+      //update,
+      //issue_status,
     };
 
     setIssues((prev) => [newIssue, ...prev]);
