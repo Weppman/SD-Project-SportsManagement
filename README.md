@@ -1,4 +1,4 @@
-# 🏟️ Finesse Sporting Facilitation (FSF) - 
+# 🏟️  SportsHub 
 Community Sports Facility Management System
 
 A web-based platform designed to simplify the management of community sports facilities such as soccer fields, basketball courts, gyms, and swimming pools. The platform enables residents to book venues, report maintenance issues, and stay updated with events and notifications—all in real time.
@@ -44,3 +44,29 @@ npm install
 # 3. Start the development server
 npm run dev
 
+🧪 Testing
+This project follows a Test-Driven Development (TDD) approach.
+
+bash
+Copy
+Edit
+# Run all tests using Jest
+npm test
+
+🚀 Continuous Deployment
+CI: Every pull request triggers linting, testing, and build checks.
+
+CD: Successful builds are automatically deployed to Azure Static Web Apps.
+
+Code Reviews: All merges to main require PR approval and test pass.
+
+
+Task management on Notion
+
+🤝 Contributors
+Dewald Smal 
+Joshua Weppelman
+Justin Perumal 
+Nathan Le Roux 
+Ibrahim Vorajee 
+Mohammed Gori 
