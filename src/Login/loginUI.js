@@ -5,12 +5,12 @@ import GoogleSignIn from './googleAuth';
 
 const Login = () => {
   return (
-    <sect>
+    <section>
       <h1>Authentication</h1>
 
       <GoogleSignIn />
 
-    </sect>
+    </section>
   );
 };
 

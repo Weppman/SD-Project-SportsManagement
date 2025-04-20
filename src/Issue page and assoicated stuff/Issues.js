@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-//import './MainUIComponents/style.css'; // Adjust path if needed
+import '../CSS/generalStyle.css';
 
 export default function Issues() {
   const [activeSection, setActiveSection] = useState(null);
