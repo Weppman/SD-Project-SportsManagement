@@ -1,29 +1,39 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import IssuePage from './Issue page and assoicated stuff/Issues'; // optional if you have a homepage
+import IssuePage from './Issues/Issues';
 import TestPage from './MainUIComponents/testMainUI';
 import BookingPage from './Bookings/bookingForm';
 import LoginPage from './Login/loginUI';
+import HomePage from './HomePage/homePage';
+import IssueUpdatePage from './Issues/issuesUpdate';
+import AdminHomePage from './Admin/adminHome';
+import UsersPage from './Admin/users';
+import { UserProvider } from './UserContext'; // <-- import your provider here
 
 function App() {
   return (
-    <Router>
-
+    <UserProvider> {/* <-- wrap your app with UserProvider */}
+      <Router>
         <ul>
           <li><Link to="/issues">Issue Page</Link></li>
           <li><Link to="/test">Test Page</Link></li>
           <li><Link to="/bookings">Bookings Page</Link></li>
           <li><Link to="/">Login Page</Link></li>
+          <li><Link to="/home">Home Page</Link></li>
         </ul>
 
-
-      <Routes>
-        <Route path="/issues" element={<IssuePage />} />
-        <Route path="/test" element={<TestPage />} />
-        <Route path="/bookings" element={<BookingPage />} />
-        <Route path="/" element={<LoginPage />} />
-      </Routes>
-    </Router>
+        <Routes>
+          <Route path="/updates" element={<IssueUpdatePage />} />
+          <Route path="/issues" element={<IssuePage />} />
+          <Route path="/test" element={<TestPage />} />
+          <Route path="/bookings" element={<BookingPage />} />
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/admin" element={<AdminHomePage />} />
+          <Route path="/users" element={<UsersPage />} />
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 }
 
