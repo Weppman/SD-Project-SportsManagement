@@ -1,20 +1,22 @@
-import React, { createContext, useState, useContext } from 'react';
+// UserContext.js
+import React, { createContext, useContext, useState } from 'react';
 
-// Create a context
-const UserContext = createContext();
+// Create the UserContext
+export const UserContext = createContext();
 
-// Create a provider component
+// Custom hook to access the context
+export const useUser = () => {
+  return useContext(UserContext);
+};
+
+// Provider component
 export const UserProvider = ({ children }) => {
-  const [userType, setUserType] = useState('admin'); // Default userType is 'user'
+  const [basename, setBasename] = useState('example'); // Example value for basename
+  const [userType, setUserType] = useState('admin'); // Example value for userType
 
   return (
-    <UserContext.Provider value={{ userType, setUserType }}>
+    <UserContext.Provider value={{ basename, userType, setUserType }}>
       {children}
     </UserContext.Provider>
   );
-};
-
-// Custom hook to use the UserContext
-export const useUser = () => {
-  return useContext(UserContext);
 };

@@ -8,44 +8,33 @@ export default function Issues() {
   const [issue_status, setIssue_status] = useState('');
   const [issues, setIssues] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState(null); // To store the selected issue for editing
-
   const [filterDate, setFilterDate] = useState(''); // State for filter by date
   const [filterFacility, setFilterFacility] = useState(''); // State for filter by facility
-
-  const userType = useUser();
-
+  const {userType} = useUser();
   const handleRowClick = (issue) => {
     setSelectedIssue(issue); // Set the clicked issue as the selected one
     setUpdate(issue.update);
     setIssue_status(issue.issue_status);
   };
-
   const handleUpdate = () => {
     if (!selectedIssue) return;
-
     const updatedIssue = {
       ...selectedIssue,
       update,
       issue_status,
     };
-
     setIssues((prev) =>
       prev.map((issue) => (issue.id === selectedIssue.id ? updatedIssue : issue))
     );
-    // Clear form fields after updating
     setSelectedIssue(null);
     setUpdate('');
     setIssue_status('');
   };
-
-  // Filter issues based on the selected date and facility
   const filteredIssues = issues.filter((issue) => {
     const matchesDate = filterDate ? new Date(issue.date).toLocaleDateString() === new Date(filterDate).toLocaleDateString() : true;
     const matchesFacility = filterFacility ? issue.facility.toLowerCase().includes(filterFacility.toLowerCase()) : true;
     return matchesDate && matchesFacility;
   });
-
-  // Download issues as a JSON file
   const handleDownload = () => {
     const blob = new Blob([JSON.stringify(filteredIssues, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -54,7 +43,6 @@ export default function Issues() {
     link.download = 'issues.json';
     link.click();
   };
-
   return (
     <>
       <Toolbar userType={userType} />
@@ -121,7 +109,6 @@ export default function Issues() {
             </tbody>
           </table>
         </section>
-
         {/* Right: Update Form */}
         <section style={{ flex: 2, padding: '1rem', overflowY: 'auto' }}>
           <h2>{selectedIssue ? 'Update Issue' : 'Select an Issue to Update'}</h2>

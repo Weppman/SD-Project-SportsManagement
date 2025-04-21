@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import GoogleSignIn from '../Login/googleAuth';  // Adjust the import as needed
+import GoogleSignIn from '../Login/googleAuth';
+import Login from '../Login/loginUI';  
 import { signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -57,5 +58,25 @@ describe('GoogleSignIn Component', () => {
 
     // Cleanup the console error mock
     consoleErrorMock.mockRestore();
+  });
+
+  describe('Login Component', () => {
+
+    test('renders the authentication header', () => {
+      render(<Login />);
+      
+      // Check if the header with 'Authentication' is rendered
+      const header = screen.getByRole('heading', { name: /authentication/i });
+      expect(header).toBeInTheDocument();
+    });
+  
+    test('renders GoogleSignIn component', () => {
+      render(<Login />);
+      
+      // Check if the GoogleSignIn component is rendered (can check based on the text or button, depending on your implementation)
+      const googleSignInButton = screen.getByText(/sign in with google/i);  // Adjust to your button's text or other selectors
+      expect(googleSignInButton).toBeInTheDocument();
+    });
+  
   });
 });

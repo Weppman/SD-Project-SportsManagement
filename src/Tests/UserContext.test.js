@@ -1,8 +1,9 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { UserProvider, useUser } from '../UserContext';
 
-// Test component that uses the context
+
+
 const ConsumerComponent = () => {
   const { userType, setUserType } = useUser();
 
@@ -25,7 +26,7 @@ describe('UserContext', () => {
     expect(screen.getByText(/User Type: admin/i)).toBeInTheDocument();
   });
 
-  test('updates userType using setUserType', () => {
+  test('updates userType using setUserType', async () => {
     render(
       <UserProvider>
         <ConsumerComponent />
@@ -33,7 +34,9 @@ describe('UserContext', () => {
     );
 
     const button = screen.getByText('Set to Staff');
-    button.click();
-    expect(screen.getByText(/User Type: staff/i)).toBeInTheDocument();
+    fireEvent.click(button); // simulates the click event
+
+    // Wait for the element with updated text to appear
+    expect(await screen.findByText(/User Type: staff/i)).toBeInTheDocument();
   });
 });

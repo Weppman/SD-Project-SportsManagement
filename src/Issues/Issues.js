@@ -10,15 +10,11 @@ export default function Issues() {
   const [issues, setIssues] = useState([]);
   //const [update, setUpdate] = useState('');
   //const [issue_status, setIssue_status] = useState('');
-
   const [filterDate, setFilterDate] = useState(''); // State for filter by date
   const [filterFacility, setFilterFacility] = useState(''); // State for filter by facility
-
-  const userType = useUser();
-
+  const { userType } = useUser();
   const handleReport = () => {
     if (description.trim() === '' || facility.trim() === '') return; // Ensure both fields are filled
-
     const newIssue = {
       id: '',
       date: Date.now(), // unique ID
@@ -28,19 +24,15 @@ export default function Issues() {
       //update,
       //issue_status,
     };
-
     setIssues((prev) => [newIssue, ...prev]);
     setDescription('');
     setFacility(''); // Clear the facility field after submission
   };
-
-  // Filter issues based on the selected date and facility
   const filteredIssues = issues.filter((issue) => {
     const matchesDate = filterDate ? new Date(issue.date).toLocaleDateString() === new Date(filterDate).toLocaleDateString() : true;
     const matchesFacility = filterFacility ? issue.facility.toLowerCase().includes(filterFacility.toLowerCase()) : true;
     return matchesDate && matchesFacility;
   });
-
   return (
     <>
       <Toolbar userType={userType} />
@@ -100,7 +92,6 @@ export default function Issues() {
             </tbody>
           </table>
         </section>
-
         {/* Right: Report Form */}
         <section style={{ flex: 2, padding: '1rem', overflowY: 'auto' }}>
           <h2>Report an Issue</h2>
