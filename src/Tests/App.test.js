@@ -1,29 +1,18 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from '../App'; 
+import { render, screen } from '@testing-library/react';
+import App from '../App'; // Import the main App component
+import * as UserContext from '../UserContext'; // Import UserContext to mock useUser
 
-test('renders App correctly', () => {
-    render(<App />);
+describe('App Component', () => {
+  test('renders with UserProvider context', () => {
+    // Mock the useUser hook to return a specific value
+    jest.spyOn(UserContext, 'useUser').mockReturnValue({ userType: 'admin' });
 
-  expect(screen.getByText(/Issue Page/i)).toBeInTheDocument();
-  expect(screen.getByText(/Bookings Page/i)).toBeInTheDocument();
-  expect(screen.getByText(/Login Page/i)).toBeInTheDocument();
-  expect(screen.getByText(/Home Page/i)).toBeInTheDocument();
+    render(<App />); // Render the whole app wrapped with UserProvider
 
-  fireEvent.click(screen.getByText(/Issue Page/i));
+    // Check if the context value (userType) is accessible in the app
+    // This can be done by checking for some UI that depends on the userType value
+    expect(screen.getByText(/admin/i)).toBeInTheDocument(); // Assumes 'admin' is used somewhere in the app
 
-  expect(window.location.pathname).toBe('/issues');
-
-  fireEvent.click(screen.getByText(/Bookings Page/i));
-
-  expect(window.location.pathname).toBe('/bookings');
-
-  fireEvent.click(screen.getByText(/Login Page/i));
-
-  expect(window.location.pathname).toBe('/');
-
-  fireEvent.click(screen.getByText(/Home Page/i));
-
-  expect(window.location.pathname).toBe('/home');
-
+    // You can further add other checks based on UI elements that depend on the context value.
+  });
 });

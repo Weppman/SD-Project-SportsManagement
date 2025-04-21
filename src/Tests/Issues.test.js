@@ -1,58 +1,67 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import Issues from '../Issue page and assoicated stuff/Issues'; // Adjust this import path if needed
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import Issues from '../Issues/Issues';
+import { useUser } from '../UserContext';
+import { MemoryRouter } from 'react-router-dom';  // Import MemoryRouter
+
+// Mock the useUser hook to simulate the user context
+jest.mock('../UserContext', () => ({
+  useUser: jest.fn(),
+}));
+
+beforeAll(() => {
+  global.URL.createObjectURL = jest.fn(() => 'mocked-url'); // Mock implementation
+});
+
+afterAll(() => {
+  jest.restoreAllMocks(); // Restore the original functionality after tests
+});
 
 describe('Issues Component', () => {
-  test('renders header and toggle buttons', () => {
-    render(<Issues />);
-
-    expect(screen.getByText(/Report Issues/i)).toBeInTheDocument();
-
-    const reportButtons = screen.getAllByRole('button', { name: /Report/i });
-    expect(reportButtons[0]).toBeInTheDocument(); // "Report" nav button
-    expect(screen.getByRole('button', { name: /Reported/i })).toBeInTheDocument();
+  // Set up the mock return value for useUser
+  beforeEach(() => {
+    useUser.mockReturnValue('admin'); // or any valid user type, such as 'user'
   });
 
-  test('shows report form when "Report" toggle is clicked', () => {
-    render(<Issues />);
-    const toggleReportBtn = screen.getAllByRole('button', { name: /Report/i })[0];
-    fireEvent.click(toggleReportBtn);
+  test('renders the component and toolbar', () => {
+    render(
+      <MemoryRouter> {/* Wrap the component with MemoryRouter */}
+        <Issues />
+      </MemoryRouter>
+    );
 
-    expect(screen.getByLabelText(/Type of issue/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Describe the issue/i)).toBeInTheDocument();
-
-    const submitBtn = screen.getAllByRole('button', { name: /Report/i })[1];
-    expect(submitBtn).toBeInTheDocument();
+    expect(screen.getByText(/Issue List/i)).toBeInTheDocument();
+    expect(screen.getByText(/Report an Issue/i)).toBeInTheDocument();
   });
 
-  test('fills and submits the report form', () => {
-    render(<Issues />);
-    const toggleReportBtn = screen.getAllByRole('button', { name: /Report/i })[0];
-    fireEvent.click(toggleReportBtn);
+  test('clears the form after submitting an issue', async () => {
+    render(
+      <MemoryRouter> {/* Wrap the component with MemoryRouter */}
+        <Issues />
+      </MemoryRouter>
+    );
 
-    fireEvent.change(screen.getByLabelText(/Type of issue/i), {
-      target: { value: 'Access' },
+    // Add an issue
+    fireEvent.change(screen.getByLabelText(/Facility:/i), { target: { value: 'Gym' } });
+    fireEvent.change(screen.getByLabelText(/Description:/i), { target: { value: 'Broken treadmill' } });
+    fireEvent.click(screen.getByText(/Submit Report/i));
+
+    // Ensure the form is cleared
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Facility:/i).value).toBe('');
+      expect(screen.getByLabelText(/Description:/i).value).toBe('');
     });
-
-    const descriptionField = screen.getByLabelText(/Describe the issue/i);
-    fireEvent.change(descriptionField, {
-      target: { value: 'Gate is locked during hours' },
-    });
-
-    expect(descriptionField).toHaveValue('Gate is locked during hours');
-
-    const submitBtn = screen.getAllByRole('button', { name: /Report/i })[1];
-    fireEvent.click(submitBtn);
   });
 
-  test('shows reported issues table when "Reported" is clicked', () => {
+  test('handles downloading issues', () => {
     render(<Issues />);
-    const reportedBtn = screen.getByRole('button', { name: /Reported/i });
-    fireEvent.click(reportedBtn);
+    
+    // Simulate the button click to download issues
+    fireEvent.click(screen.getByText(/Download Issues/i));
 
-    expect(screen.getByText(/Reported:/i)).toBeInTheDocument();
-    expect(screen.getByRole('table')).toBeInTheDocument();
-    expect(screen.getByText('Row 1, Cell 1')).toBeInTheDocument();
+    // Verify that the URL.createObjectURL was called
+    expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+    
+    // Further test behavior (like file download handling) if needed
   });
-  
 });
