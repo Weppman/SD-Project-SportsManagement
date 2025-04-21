@@ -16,7 +16,6 @@ function App() {
       <Router>
         <ul>
           <li><Link to="/issues">Issue Page</Link></li>
-          <li><Link to="/test">Test Page</Link></li>
           <li><Link to="/bookings">Bookings Page</Link></li>
           <li><Link to="/">Login Page</Link></li>
           <li><Link to="/home">Home Page</Link></li>

@@ -28,7 +28,7 @@ const toolbarButtonStyle = {
 
 // Main Admin Page Component
 export default function AdminPage() {
-  const userType = useUser(); // Get the user type, possibly for permission-based rendering
+  const {userType} = useUser(); // Get the user type, possibly for permission-based rendering
 
   return (
     <>
