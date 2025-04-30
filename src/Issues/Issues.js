@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Toolbar from '../ToolBar/toolBar';
 import { useUser } from '../UserContext';
 import { Timestamp } from 'firebase/firestore';
+import '../Issues/issues.css';
 
 export default function Issues() {
   const [issueType, setIssueType] = useState('Maintenance');
@@ -19,9 +20,7 @@ export default function Issues() {
       setIsLoading(true);
       try {
         const response = await fetch('https://getvenuedatafull-mokwbj4tsa-uc.a.run.app');
-        if (!response.ok) {
-          throw new Error('Failed to fetch facilities');
-        }
+        if (!response.ok) throw new Error('Failed to fetch facilities');
         const data = await response.json();
         setFacilities(data);
       } catch (error) {
@@ -35,19 +34,16 @@ export default function Issues() {
       setIsLoading(true);
       try {
         const response = await fetch('https://getresolved3days-mokwbj4tsa-uc.a.run.app');
-        if (!response.ok) {
-          throw new Error('Failed to fetch issues');
-        }
+        if (!response.ok) throw new Error('Failed to fetch issues');
         const data = await response.json();
 
         const fixedData = data.map(issue => {
           let date = null;
-          if (issue.dateReported && typeof issue.dateReported === 'object' && issue.dateReported.seconds) {
+          if (issue.dateReported?.seconds) {
             date = new Date(issue.dateReported.seconds * 1000);
           }
-          if (!date || isNaN(date.getTime())) {
-            date = null;
-          }
+          if (!date || isNaN(date.getTime())) date = null;
+
           return {
             id: issue.id || Date.now(),
             date,
@@ -78,7 +74,6 @@ export default function Issues() {
     }
 
     const timestamp = Timestamp.now();
-
     const newIssue = {
       dateReported: {
         seconds: timestamp.seconds,
@@ -99,9 +94,7 @@ export default function Issues() {
         body: JSON.stringify(newIssue),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to insert issue');
-      }
+      if (!response.ok) throw new Error('Failed to insert issue');
 
       const result = await response.json();
 
@@ -140,29 +133,26 @@ export default function Issues() {
   return (
     <>
       <Toolbar userType={userType} />
-      <section style={{ display: 'flex', height: 'calc(100vh - 60px)', padding: '1rem' }}>
-        {/* Issue List */}
-        <section style={{ flex: 3, overflowY: 'auto', borderRight: '1px solid #ccc', paddingRight: '1rem' }}>
+      <section className="issues-container">
+        <section className="issue-list">
           <h2>Issue List</h2>
-
-          {/* Filters */}
-          <section style={{ marginBottom: '1rem' }}>
+          <section className="filter-section">
             <label htmlFor="filterDate">Filter by Date:</label>
             <input
               type="date"
               id="filterDate"
+              className="filter-input"
               value={filterDate}
               onChange={e => setFilterDate(e.target.value)}
-              style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
             />
-            <label htmlFor="filterFacility" style={{ marginLeft: '1rem' }}>
+            <label htmlFor="filterFacility" className="filter-label">
               Filter by Facility:
             </label>
             <select
               id="filterFacility"
+              className="filter-input"
               value={filterFacility}
               onChange={e => setFilterFacility(e.target.value)}
-              style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
             >
               <option value="">All Facilities</option>
               {facilities.map(facility => (
@@ -173,39 +163,31 @@ export default function Issues() {
             </select>
           </section>
 
-          {/* Issues Table */}
           {isLoading ? (
             <p>Loading issues...</p>
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table className="issues-table">
               <thead>
                 <tr>
                   {['Date', 'Facility', 'Type', 'Description', 'Update', 'Issue Status'].map(header => (
-                    <th
-                      key={header}
-                      style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}
-                    >
-                      {header}
-                    </th>
+                    <th key={header}>{header}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filteredIssues.map(issue => (
                   <tr key={issue.id}>
-                    <td style={{ padding: '0.5rem' }}>
-                      {issue.date ? new Date(issue.date).toLocaleString() : 'Unknown'}
-                    </td>
-                    <td style={{ padding: '0.5rem' }}>{issue.facility}</td>
-                    <td style={{ padding: '0.5rem' }}>{issue.type}</td>
-                    <td style={{ padding: '0.5rem' }}>{issue.description}</td>
-                    <td style={{ padding: '0.5rem' }}>{issue.update}</td>
-                    <td style={{ padding: '0.5rem' }}>{issue.issue_status}</td>
+                    <td>{issue.date ? new Date(issue.date).toLocaleString() : 'Unknown'}</td>
+                    <td>{issue.facility}</td>
+                    <td>{issue.type}</td>
+                    <td>{issue.description}</td>
+                    <td>{issue.update}</td>
+                    <td>{issue.issue_status}</td>
                   </tr>
                 ))}
                 {filteredIssues.length === 0 && (
                   <tr>
-                    <td colSpan="6" style={{ padding: '1rem', textAlign: 'center', color: '#777' }}>
+                    <td colSpan="6" className="no-issues">
                       No issues reported.
                     </td>
                   </tr>
@@ -215,18 +197,16 @@ export default function Issues() {
           )}
         </section>
 
-        {/* Report Issue Form */}
-        <section style={{ flex: 2, padding: '1rem', overflowY: 'auto' }}>
+        <section className="report-form">
           <h2>Report an Issue</h2>
 
-          {/* Facility Selector */}
-          <section style={{ marginBottom: '1rem' }}>
+          <section className="form-group">
             <label htmlFor="facility">Facility:</label>
             <select
               id="facility"
               value={facility}
               onChange={e => setFacility(e.target.value)}
-              style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
+              className="filter-input"
             >
               <option value="">Select a Facility</option>
               {facilities.map(facility => (
@@ -237,20 +217,13 @@ export default function Issues() {
             </select>
           </section>
 
-          {/* Issue Type Selector */}
-          <section style={{ marginBottom: '1rem' }}>
+          <section className="form-group">
             <label htmlFor="issueType">Issue Type:</label>
             <select
               id="issueType"
               value={issueType}
               onChange={e => setIssueType(e.target.value)}
-              style={{
-                marginTop: '0.5rem',
-                width: '100%',
-                padding: '0.5rem',
-                border: '1px solid #ccc',
-                boxSizing: 'border-box',
-              }}
+              className="full-width-select"
             >
               {['Maintenance', 'Booking', 'Access', 'Community', 'Other'].map(type => (
                 <option key={type} value={type}>
@@ -260,36 +233,18 @@ export default function Issues() {
             </select>
           </section>
 
-          {/* Description Input */}
-          <section style={{ marginBottom: '1rem' }}>
+          <section className="form-group">
             <label htmlFor="description">Description:</label>
             <textarea
               id="description"
               rows="6"
               value={description}
               onChange={e => setDescription(e.target.value)}
-              style={{
-                width: '100%',
-                marginTop: '0.5rem',
-                padding: '0.5rem',
-                border: '1px solid #ccc',
-                boxSizing: 'border-box',
-              }}
+              className="full-width-textarea"
             />
           </section>
 
-          {/* Submit Button */}
-          <button
-            onClick={handleReport}
-            style={{
-              padding: '0.5rem 1rem',
-              width: '100%',
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
+          <button onClick={handleReport} className="submit-button">
             Submit Report
           </button>
         </section>
