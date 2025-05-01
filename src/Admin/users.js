@@ -1,68 +1,100 @@
-import React, { useState } from 'react';
-import Toolbar from '../ToolBar/toolBar'; // Assuming you have a toolbar component
+import React, { useState, useEffect } from 'react';
+import Toolbar from '../ToolBar/toolBar';
+import AdminToolbar from '../Admin/adminToolBar';
+import '../Admin/users.css'; 
 
 export default function Users() {
-  const [users, setUsers] = useState([
-    // Example users (You would fetch these from an API or database)
-    { id: 1, role: 'Admin' },
-    { id: 2, role: 'User' },
-    // Add more user entries as needed
-  ]);
-  const [selectedUser, setSelectedUser] = useState(null); // To store the selected user for editing
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null); 
   const [role, setRole] = useState('');
 
-  // Handle row click to select a user
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('https://getuserdatafull-mokwbj4tsa-uc.a.run.app');
+        if (!response.ok) {
+          throw new Error('Cannot access Users database');
+        }
+        const data = await response.json();
+        setUsers(data); 
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers(); 
+  }, []);
+
   const handleRowClick = (user) => {
     setSelectedUser(user);
-    setRole(user.role);
+    setRole(user.UserType);
   };
 
-  // Handle user update
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (!selectedUser) return;
 
-    const updatedUser = { ...selectedUser, role };
-    
-    setUsers((prev) =>
-      prev.map((user) => (user.id === selectedUser.id ? updatedUser : user))
-    );
+    const updatedUser = {
+      ...selectedUser,
+      UserType: role,
+    };
 
-    // Clear selected user and form
-    setSelectedUser(null);
-    setRole('');
+    try {
+      const response = await fetch('https://updateuserdata-mokwbj4tsa-uc.a.run.app', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUser),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update user');
+      }
+
+      const updatedUsersResponse = await fetch('https://getuserdatafull-mokwbj4tsa-uc.a.run.app');
+      const updatedUsersData = await updatedUsersResponse.json();
+
+      const fixedData = updatedUsersData.map(user => ({
+        UUID: user.UUID || Date.now(),
+        UserType: user.UserType || '',
+      }));
+
+      setUsers(fixedData);
+      setSelectedUser(null);
+      setRole('');
+    } catch (error) {
+      console.error('Error updating user:', error);
+    }
   };
 
   return (
     <>
       <Toolbar />
-      <section style={{ display: 'flex', height: 'calc(100vh - 60px)', padding: '1rem' }}>
-        {/* Left: Scrolling Table */}
-        <section style={{ flex: 3, overflowY: 'auto', borderRight: '1px solid #ccc', paddingRight: '1rem' }}>
+      <AdminToolbar />
+      <section className="main-container">
+        <section className="user-list-section">
           <h2>User List</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <table>
             <thead>
               <tr>
-                <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}>ID</th>
-                <th style={{ borderBottom: '1px solid #ccc', textAlign: 'left', padding: '0.5rem' }}>Role</th>
+                <th>ID</th>
+                <th>Role</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr
-                  key={user.id}
-                  onClick={() => handleRowClick(user)} // Click to select user
-                  style={{
-                    cursor: 'pointer',
-                    backgroundColor: selectedUser?.id === user.id ? '#f0f0f0' : 'white',
-                  }}
+                  key={user.UUID}
+                  onClick={() => handleRowClick(user)}
+                  className={selectedUser?.UUID === user.UUID ? 'selected' : ''}
                 >
-                  <td style={{ padding: '0.5rem' }}>{user.id}</td>
-                  <td style={{ padding: '0.5rem' }}>{user.role}</td>
+                  <td>{user.UUID}</td>
+                  <td>{user.UserType}</td>
                 </tr>
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan="3" style={{ padding: '1rem', textAlign: 'center', color: '#777' }}>
+                  <td colSpan="3" className="no-users">
                     No users found.
                   </td>
                 </tr>
@@ -71,31 +103,26 @@ export default function Users() {
           </table>
         </section>
 
-        {/* Right: Update Form */}
-        <section style={{ flex: 2, padding: '1rem', overflowY: 'auto' }}>
+        <section className="update-section">
           <h2>{selectedUser ? 'Update User' : 'Select a User to Update'}</h2>
           {selectedUser && (
             <>
-              <section style={{ marginBottom: '1rem' }}>
+              <section>
                 <label htmlFor="role">Role:</label>
-                <input
+                <select
                   id="role"
-                  type="text"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  style={{ marginTop: '0.5rem', width: '100%', padding: '0.5rem', border: '1px solid #ccc', boxSizing: 'border-box' }}
-                />
+                  className="role-select"
+                >
+                  <option value="user">user</option>
+                  <option value="staff">staff</option>
+                  <option value="admin">admin</option>
+                </select>
               </section>
               <button
                 onClick={handleUpdate}
-                style={{
-                  padding: '0.5rem 1rem',
-                  width: '100%',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
+                className="update-button"
               >
                 Update User
               </button>

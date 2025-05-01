@@ -18,7 +18,7 @@ const Toolbar = () => {
         <Link to="/home">Home</Link>
         <Link to="/issues">Issues</Link>
         <Link to="/bookings">Bookings</Link>
-        <Link to="/test">Tests</Link>
+
         <Link to="/facilities">Facilities</Link>
 
         {/* Staff-specific links */}

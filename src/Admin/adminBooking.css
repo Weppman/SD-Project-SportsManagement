@@ -1,0 +1,120 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    border: 1px solid #ffffff;
+    font-family: Arial, sans-serif;
+  }
+  
+  th {
+    background-color:  #4a90e2;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    border: 1px solid #0e0d0d;
+    color: #1a1a1a;
+  }
+  
+  td {
+    padding: 12px;
+    border: 1px solid #0c0c0c;
+    text-align: left;
+    color: #1a1a1a;
+    background-color: #ebe7e7;
+  }
+  table {
+    margin-top: 20px;
+  }
+  th, td {
+    text-align: center;
+  }
+  td button {
+    width: 100px;
+    margin: 5px;
+  }
+  .auto-accept-button {
+    margin-top: 20px;
+    text-align: right;
+    margin-right: 20px;
+  }
+  
+  .auto-accept-button button {
+    padding: 10px 16px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .auto-accept-button button:hover {
+    background-color: #357ab8;
+  }
+  #venue-filter-label {
+    font-size: 16px;
+    margin-right: 10px;
+    font-weight: bold;
+    color: #1a1a1a;
+  }
+  
+  #venue-filter {
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f7f7f7;
+    color: #1a1a1a;
+    cursor: pointer;
+    width: 200px;
+    margin-bottom: 20px;
+  }
+  
+  #venue-filter option {
+    font-size: 14px;
+    padding: 10px;
+  }
+#admin-bookings-section {
+  margin-top: 20px;
+}
+
+#auto-accept-button, #venue-filter, #venue-filter-label {
+  margin-bottom: 10px;
+}
+
+#admin-bookings-section > button, 
+#admin-bookings-section > label, 
+#admin-bookings-section > select {
+  display: inline-block;
+  margin-right: 15px;
+  vertical-align: middle;
+}
+
+#venue-filter-label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+
+#venue-filter {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+  color: #1a1a1a;
+  cursor: pointer;
+  width: 200px;
+}
+
+#auto-accept-button {
+  padding: 10px 20px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#auto-accept-button:hover {
+  background-color: #3578e5;
+}

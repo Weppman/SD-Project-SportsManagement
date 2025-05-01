@@ -4,11 +4,14 @@
   "private": true,
   "dependencies": {
     "-": "^0.0.1",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/react": "^6.1.17",
     "@testing-library/dom": "^10.4.0",
-    "@testing-library/user-event": "^13.5.0",
     "firebase": "^11.6.0",
+    "font-awesome": "^4.7.0",
     "g": "^2.0.1",
     "react": "^19.1.0",
+    "react-calendar": "^5.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^6.30.0",
     "react-scripts": "5.0.1",
@@ -19,7 +22,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "coverage": "react-scripts test --coverage --collectCoverageFrom='src/**/*.{js,jsx}' --watchAll=false"
   },
   "eslintConfig": {
     "extends": [
@@ -44,7 +48,9 @@
     "@babel/preset-react": "^7.26.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "babel-jest": "^29.7.0",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "jest-fetch-mock": "^3.0.3"
   }
 }
