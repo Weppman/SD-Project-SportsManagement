@@ -10,7 +10,9 @@ const AdminToolbar = () => {
       <Link to="/users"> {/* Link to Users Page */}
         <button style={toolbarButtonStyle}>Users</button>
       </Link>
+      <Link to ="/adminBooking">
       <button style={toolbarButtonStyle}>Bookings</button>
+      </Link>
       <button style={toolbarButtonStyle}>Events</button>
     </section>
   );
