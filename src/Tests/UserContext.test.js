@@ -34,9 +34,8 @@ describe('UserContext', () => {
     );
 
     const button = screen.getByText('Set to Staff');
-    fireEvent.click(button); // simulates the click event
+    fireEvent.click(button);
 
-    // Wait for the element with updated text to appear
     expect(await screen.findByText(/User Type: staff/i)).toBeInTheDocument();
   });
 });

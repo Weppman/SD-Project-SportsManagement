@@ -9,7 +9,7 @@ export default function Events() {
   return (
     <>
       <Toolbar userType={userType} />
-      <AdminToolbar />
+      {userType === 'admin' && <AdminToolbar />}
   
       <section style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 60px)', padding: '1rem' }}>
         <section style={{ marginBottom: '1rem' }}>
