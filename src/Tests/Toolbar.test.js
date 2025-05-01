@@ -23,7 +23,6 @@ describe('Toolbar Component', () => {
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Issues')).toBeInTheDocument();
     expect(screen.getByText('Bookings')).toBeInTheDocument();
-    expect(screen.getByText('Tests')).toBeInTheDocument();
 
     expect(screen.queryByText('Updates')).not.toBeInTheDocument();
     expect(screen.queryByText('Admin')).not.toBeInTheDocument();

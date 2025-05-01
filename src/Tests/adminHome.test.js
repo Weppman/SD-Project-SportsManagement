@@ -24,7 +24,6 @@ describe('AdminPage', () => {
   test('renders AdminToolbar buttons and link to Users', () => {
     renderWithRouter();
 
-    // Check all buttons
     const usersButton = screen.getByText('Users');
     const bookingsButton = screen.getByText('Bookings');
     const eventsButton = screen.getByText('Events');
@@ -33,7 +32,6 @@ describe('AdminPage', () => {
     expect(bookingsButton).toBeInTheDocument();
     expect(eventsButton).toBeInTheDocument();
 
-    // Check link to /users
     expect(usersButton.closest('a')).toHaveAttribute('href', '/users');
   });
 
