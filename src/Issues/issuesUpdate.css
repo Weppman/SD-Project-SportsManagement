@@ -1,0 +1,91 @@
+.issues-container {
+    display: flex;
+    height: calc(100vh - 60px);
+    padding: 1rem;
+  }
+  
+  .issues-list {
+    flex: 3;
+    overflow-y: auto;
+    border-right: 1px solid #ccc;
+    padding-right: 1rem;
+  }
+  
+  .filters {
+    margin-bottom: 1rem;
+  }
+  
+  .filter-input {
+    margin-left: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .filter-select {
+    margin-left: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .facility-label {
+    margin-left: 1rem;
+  }
+  
+  .issues-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .issues-table th,
+  .issues-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .issues-table-row {
+    cursor: pointer;
+  }
+  
+  .issues-table-row.selected {
+    background-color: #f0f0f0;
+  }
+  
+  .no-issues {
+    padding: 1rem;
+    text-align: center;
+    color: #777;
+  }
+  
+  .update-section {
+    flex: 2;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  .update-input,
+  .update-select {
+    margin-top: 0.5rem;
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  .update-button {
+    padding: 0.5rem 1rem;
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .download-button {
+    padding: 0.5rem 1rem;
+    width: 100%;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  
