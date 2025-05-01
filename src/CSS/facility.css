@@ -1,0 +1,138 @@
+.facilities-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  background-color: #0A475A;
+  color: white;
+  padding: 1rem;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.facilities-container p {
+  color: #0A475A;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.jump-links {
+  background-color: white;
+  padding: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.jump-links a {
+  margin: 0 1rem;
+  color: #0A475A;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.jump-links a:hover {
+  text-decoration: underline;
+}
+
+.facility-list {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+.facility-card {
+  background: white;
+  color: #0A475A;
+  border-radius: 15px;
+  border: black 0.5px solid;
+  box-shadow: 0 4px 8px white(1, 0, 1, 1.5);
+  padding: 1rem;
+  text-align: left;
+}
+
+.facility-card img {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.facility-maps {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: static;
+  top: 1rem;
+}
+
+.facility-maps figure {
+  margin: 0;
+  background: white;
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.facility-maps img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.facility-maps figcaption {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  color: #0A475A;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #0A475A;
+}
+
+.summary-table {
+  margin: 0;
+  padding: 2rem;
+  background: #0A475A;
+  color: white;
+  border-radius: 10px;
+}
+
+.summary-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.summary-table th, .summary-table td {
+  border: 2px solid white;
+  padding: 0.5rem;
+  text-align: left;
+}

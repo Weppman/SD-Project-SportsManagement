@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import IssuePage from './Issues/Issues';
 import TestPage from './MainUIComponents/testMainUI';
 import BookingPage from './Bookings/bookingForm';
@@ -8,19 +8,20 @@ import HomePage from './HomePage/homePage';
 import IssueUpdatePage from './Issues/issuesUpdate';
 import AdminHomePage from './Admin/adminHome';
 import UsersPage from './Admin/users';
+import Facilities from './Venues/facilities'
 import { UserProvider } from './UserContext'; // <-- import your provider here
 
 function App() {
   return (
     <UserProvider> {/* <-- wrap your app with UserProvider */}
       <Router>
-        <ul>
-          <li><Link to="/issues">Issue Page</Link></li>
-          <li><Link to="/test">Test Page</Link></li>
-          <li><Link to="/bookings">Bookings Page</Link></li>
-          <li><Link to="/">Login Page</Link></li>
-          <li><Link to="/home">Home Page</Link></li>
-        </ul>
+      <header>
+          <nav>
+            <figure>
+              <img src="/logo.png" alt="SportsHub Logo" className="logo" />
+            </figure>
+          </nav>
+        </header>
 
         <Routes>
           <Route path="/updates" element={<IssueUpdatePage />} />
@@ -31,6 +32,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/admin" element={<AdminHomePage />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/facilities" element={<Facilities/>}/>
         </Routes>
       </Router>
     </UserProvider>
