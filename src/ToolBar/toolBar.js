@@ -18,7 +18,6 @@ const Toolbar = () => {
         <Link to="/home">Home</Link>
         <Link to="/issues">Issues</Link>
         <Link to="/bookings">Bookings</Link>
-        <Link to="/test">Tests</Link>
 
         {/* Staff-specific links */}
         {(userType === 'staff' || userType === 'admin') && (
