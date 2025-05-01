@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import './bookingForm.css'; 
 import Toolbar from '../ToolBar/toolBar';
 import { useUser} from '../UserContext';
-import { useEffect } from 'react';
+import { useEffect,useCallback } from 'react';
 import {Timestamp } from 'firebase/firestore';
 
 
@@ -19,17 +19,17 @@ const BookingForm = () => {
   const [numberOfPeople, setNumberOfPeople] = useState(1);
   const [purpose, setPurpose] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const fetchBookings = async () => {
-      try {
-        const response = await fetch('https://getacceptedfuturebookings-mokwbj4tsa-uc.a.run.app');
-        const data = await response.json();
-        console.log('Fetched bookings:', data);
-        setBookings(data.bookings);
-        console.log("Now Bookings",bookings);
-      } catch (error) {
-        console.error('Error fetching bookings:', error);
-      }
-    };
+  const fetchBookings = useCallback(async () => {
+    try {
+      const response = await fetch('https://getacceptedfuturebookings-mokwbj4tsa-uc.a.run.app');
+      const data = await response.json();
+      //console.log('Fetched bookings:', data);
+      setBookings(data.bookings);
+      //console.log("Now Bookings", bookings);
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    }
+  }, []);
     const fetchvenues = async () => {
       try {
         const response = await fetch('https://getvenuedatafull-mokwbj4tsa-uc.a.run.app'); 
@@ -44,8 +44,8 @@ const BookingForm = () => {
       fetchvenues();
     },[])
     useEffect(() => {
-    fetchBookings();
-  }, []);
+      fetchBookings();
+    }, [fetchBookings]);
   console.log(`This is the data: ${bookings}`);
   useEffect(() => {
     if (venues && venues.length > 0) {

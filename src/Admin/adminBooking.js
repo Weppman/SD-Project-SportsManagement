@@ -4,6 +4,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import { Timestamp } from 'firebase/firestore';
 import Toolbar from '../ToolBar/toolBar';
 import { useUser} from '../UserContext';
+import { useCallback } from "react";
 
 export default function AdminBookings() {
   const userType = useUser();
@@ -11,20 +12,20 @@ export default function AdminBookings() {
   const [isAscending, setIsAscending] = useState(true); 
   const [isVenueAscending, setIsVenueAscending] = useState(true);
   const [selectedVenue, setSelectedVenue] = useState(""); 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       const response = await fetch('https://getpendingfuturebookings-mokwbj4tsa-uc.a.run.app');
       const data = await response.json();
       console.log('Fetched bookings:', data);
       setBookings(data.bookings);
-      console.log("Now Bookings",bookings);
     } catch (error) {
       console.error('Error fetching bookings:', error);
     }
-  };
- useEffect(() => {
-     fetchBookings();
-   }, []);
+  }, []); // Add dependencies here if needed
+  
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]); // No ESLint warning now
    const formatDate = (timestamp) => {
     const date = new Date(new Timestamp(timestamp.seconds, timestamp.nanoseconds).toDate());
     const year = date.getFullYear();
