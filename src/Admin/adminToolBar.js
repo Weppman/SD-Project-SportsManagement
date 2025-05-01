@@ -5,7 +5,9 @@ const AdminToolbar = () => {
   return (
     <section style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '1rem' }}>
       <Link to="/users"><button style={toolbarButtonStyle}>Users</button></Link>
+      <Link to="/adminBooking">
       <button style={toolbarButtonStyle}>Bookings</button>
+      </Link>
       <Link to="/events"><button style={toolbarButtonStyle}>Events</button></Link>
       <button style={toolbarButtonStyle}>Facilities</button>
     </section>
