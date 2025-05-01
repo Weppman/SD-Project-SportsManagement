@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import IssuePage from './Issues/Issues';
-import TestPage from './MainUIComponents/testMainUI';
 import BookingPage from './Bookings/bookingForm';
 import LoginPage from './Login/loginUI';
 import HomePage from './HomePage/homePage';
@@ -25,7 +24,6 @@ function App() {
         <Routes>
           <Route path="/updates" element={<IssueUpdatePage />} />
           <Route path="/issues" element={<IssuePage />} />
-          <Route path="/test" element={<TestPage />} />
           <Route path="/bookings" element={<BookingPage />} />
           <Route path="/" element={<LoginPage />} />
           <Route path="/home" element={<HomePage />} />
