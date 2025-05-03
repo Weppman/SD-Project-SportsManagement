@@ -7,7 +7,7 @@
     "@fullcalendar/daygrid": "^6.1.17",
     "@fullcalendar/react": "^6.1.17",
     "@testing-library/dom": "^10.4.0",
-    "firebase": "^11.6.0",
+    "firebase": "^11.6.1",
     "font-awesome": "^4.7.0",
     "g": "^2.0.1",
     "react": "^19.1.0",

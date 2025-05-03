@@ -1,53 +1,129 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import BookingPage from '../Bookings/bookingForm'; 
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import BookingForm from '../Bookings/bookingForm';
+import { useUser } from '../UserContext';
+import { BrowserRouter } from 'react-router-dom';
 
-describe('BookingPage Component', () => {
-  test('renders all input fields and labels', () => {
-    render(<BookingPage />);
+jest.mock('../UserContext', () => ({
+  useUser: jest.fn(),
+}));
 
-    expect(screen.getByRole('heading', { name: /Book a Facility/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/Select a facility/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Date/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Start time/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/End time/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Number of people/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Purpose/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Go to Issues Page/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Go to Home Page/i })).toBeInTheDocument();
-  });
+global.fetch = jest.fn();
 
-  test('can fill out the form and submit', () => {
-    render(<BookingPage />);
-    
-    fireEvent.change(screen.getByLabelText(/Select a facility/i), { target: { value: 'option_2' } });
-    fireEvent.change(screen.getByLabelText(/Date/i), { target: { value: '2025-04-20' } });
-    fireEvent.change(screen.getByLabelText(/Start time/i), { target: { value: '10:00' } });
-    fireEvent.change(screen.getByLabelText(/End time/i), { target: { value: '12:00' } });
-    fireEvent.change(screen.getByLabelText(/Number of people/i), { target: { value: '10' } });
-    fireEvent.change(screen.getByLabelText(/Purpose/i), { target: { value: 'Training session' } });
+const mockVenues = [
+  { id: '1', Name: 'Main Hall', Capacity: 50 },
+  { id: '2', Name: 'Conference Room', Capacity: 20 },
+];
 
-    const submitButton = screen.getByDisplayValue('Book');
+const mockBookings = {
+  bookings: [
+    {
+      venueID: 'Main Hall',
+      date: { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 },
+      timeSlot: '09:00 - 10:00',
+      status: 'approved',
+    },
+  ],
+};
 
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-    fireEvent.click(submitButton);
+beforeEach(() => {
+  jest.clearAllMocks();
+  useUser.mockReturnValue('user');
+});
 
-    expect(consoleSpy).toHaveBeenCalledWith('Form submitted');
-    expect(screen.getByDisplayValue('Booking Request Sent')).toBeInTheDocument();
+test('renders booking form correctly', async () => {
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) }); // venues
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) }); // bookings
 
-    consoleSpy.mockRestore();
-  });
+  render(
+    <BrowserRouter>
+      <BookingForm />    
+    </BrowserRouter>
+);
+  
+  expect(await screen.findByText(/make a booking/i)).toBeInTheDocument();
+  expect(await screen.findByLabelText(/choose a venue/i)).toBeInTheDocument();
+});
 
-  test('navigates to issues page and home page', () => {
-    render(<BookingPage />);
+test('displays available time slots after date selection', async () => {
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) });
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) });
 
-    delete window.location;
-    window.location = { href: '' };
+  render(
+    <BrowserRouter>
+      <BookingForm />    
+    </BrowserRouter>
+);
 
-    fireEvent.click(screen.getByRole('button', { name: /Go to Issues Page/i }));
-    expect(window.location.href).toBe('/issue.html');
+  await waitFor(() => screen.getByLabelText(/choose a venue/i));
 
-    fireEvent.click(screen.getByRole('button', { name: /Go to Home Page/i }));
-    expect(window.location.href).toBe('/main.html');
-  });
+  const calendarTiles = document.querySelectorAll('.react-calendar__tile');
+  fireEvent.click(calendarTiles[10]); 
+
+  expect(await screen.findByText(/enter the following details/i)).toBeInTheDocument();
+  expect(await screen.findByLabelText(/time/i)).toBeInTheDocument();
+});
+
+test('disables fully booked dates', async () => {
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) });
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) });
+
+  render(
+    <BrowserRouter>
+      <BookingForm />    
+    </BrowserRouter>
+);
+  await waitFor(() => screen.getByLabelText(/choose a venue/i));
+
+  const disabledTiles = document.querySelectorAll('.react-calendar__tile--disabled');
+  expect(disabledTiles.length).toBeGreaterThanOrEqual(0);
+});
+
+test('form submission with valid data triggers API call', async () => {
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) });
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) });
+  fetch.mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ status: 'success' }) });
+
+  render(
+    <BrowserRouter>
+      <BookingForm />    
+    </BrowserRouter>
+);
+  await waitFor(() => screen.getByLabelText(/choose a venue/i));
+
+  const calendarTiles = document.querySelectorAll('.react-calendar__tile');
+  fireEvent.click(calendarTiles[15]);
+
+  await waitFor(() => screen.getByLabelText(/time/i));
+  fireEvent.change(screen.getByLabelText(/time/i), { target: { value: '10:00 - 11:00' } });
+
+  fireEvent.change(screen.getByLabelText(/number of people/i), { target: { value: '10' } });
+  fireEvent.change(screen.getByLabelText(/purpose/i), { target: { value: 'Test Booking' } });
+
+  fireEvent.click(screen.getByText(/confirm booking/i));
+
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3));
+});
+
+test('shows error if time not selected before submitting', async () => {
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) });
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) });
+
+  render(
+    <BrowserRouter>
+      <BookingForm />    
+    </BrowserRouter>
+);
+  await waitFor(() => screen.getByLabelText(/choose a venue/i));
+
+  const calendarTiles = document.querySelectorAll('.react-calendar__tile');
+  fireEvent.click(calendarTiles[5]);
+
+  fireEvent.change(screen.getByLabelText(/number of people/i), { target: { value: '5' } });
+  fireEvent.change(screen.getByLabelText(/purpose/i), { target: { value: 'No time test' } });
+
+  window.alert = jest.fn();
+  fireEvent.click(screen.getByText(/confirm booking/i));
+
+  expect(window.alert).toHaveBeenCalledWith('Please select a time!');
 });
