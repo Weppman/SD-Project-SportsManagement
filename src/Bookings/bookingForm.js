@@ -23,9 +23,7 @@ const BookingForm = () => {
     try {
       const response = await fetch('https://getacceptedfuturebookings-mokwbj4tsa-uc.a.run.app');
       const data = await response.json();
-      //console.log('Fetched bookings:', data);
       setBookings(data.bookings);
-      //console.log("Now Bookings", bookings);
     } catch (error) {
       console.error('Error fetching bookings:', error);
     }
@@ -34,7 +32,6 @@ const BookingForm = () => {
       try {
         const response = await fetch('https://getvenuedatafull-mokwbj4tsa-uc.a.run.app'); 
         const data = await response.json();
-        console.log('Fetched venues:', data);
         setVenues(data);
       } catch (error) {
         console.error('Error fetching venues:', error);
@@ -46,7 +43,6 @@ const BookingForm = () => {
     useEffect(() => {
       fetchBookings();
     }, [fetchBookings]);
-  console.log(`This is the data: ${bookings}`);
   useEffect(() => {
     if (venues && venues.length > 0) {
       setSelectedVenue(venues[0].Name);
@@ -69,10 +65,7 @@ const BookingForm = () => {
     const selectedDateStr = Timestamp.fromDate(date).toDate().toDateString(); // 'date' is already a JS Date
     const bookedSlots = bookings.filter((b) => {
       const bookingDate = new Date(new Timestamp(b.date.seconds, b.date.nanoseconds).toDate());
-      console.log('Booking raw date:', b.date);
-      console.log('Booking converted date:', bookingDate);
       if(bookingDate.toDateString() === selectedDateStr && b.status === "approved" && b.venueID === selectedVenue){
-        console.log("Test:True");
       }
       return (
         b.venueID === selectedVenue &&
@@ -80,16 +73,10 @@ const BookingForm = () => {
         b.status === "approved"
       );
     }).map((b) => b.timeSlot);
-      console.log(`BookedSlots:${selectedTime}`);
-      console.log('Booked time slots:', bookedSlots);
-      console.log("Bookings data:", bookings);
-      console.log("Selected Venue:", selectedVenue);
-      console.log("Selected Date:", selectedDateStr);
     return generateHourlySlots().filter((slot) => !bookedSlots.includes(slot));
   };
   const isFullyBooked = (dateObj) => {
     const selectedDateStr = dateObj.toDateString(); // use the date passed into tileDisabled
-    console.log("Bookings is:",bookings);
     const bookedSlots = bookings.filter((b) => {
       const bookingDate = new Timestamp(b.date.seconds, b.date.nanoseconds).toDate();
       return (
@@ -107,18 +94,15 @@ const BookingForm = () => {
     }
     if(typeof venue.Capacity === "object"){
       const totalCap = Object.values(venue.Capacity).reduce((sum, num) => sum + num, 0);
-      console.log("Venue cap",totalCap);
       return totalCap;
     }
     else{
-      console.log("Venue cap",venue.Capacity);
       return venue.Capacity
     }
   };
   const handleDateChange = (newDate) => {
     setDate(newDate);
     setShowTimePopup(true);
-    console.log(`Selected date: ${newDate}`);
   };
   const handleConfirmBooking = async () => {
     if (isSubmitting){
@@ -148,7 +132,6 @@ const BookingForm = () => {
       });
       const result = await response.json();
       if (response.ok) {
-        console.log('Booking confirmed:', result);
       } else {
         console.error('Error confirming booking:', result);
       }
@@ -158,8 +141,6 @@ const BookingForm = () => {
     await fetchBookings();
     setShowTimePopup(false);
     alert(`Booked ${selectedVenue} on ${date.toDateString()} at ${selectedTime} for ${numberOfPeople} people`);
-    console.log(`Purpose: ${purpose}, Date: ${date} , Number of people:${numberOfPeople} , Time:${selectedTime}, Venue:${selectedVenue}`);
-    console.log(bookingData);
     setSelectedTime(null);
     setPurpose("");
     setNumberOfPeople(1);

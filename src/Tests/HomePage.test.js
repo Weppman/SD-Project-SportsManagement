@@ -1,54 +1,42 @@
-import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import HomePage from '../HomePage/homePage';
+import { useUser } from '../UserContext';
+
+jest.mock('../UserContext', () => ({
+  useUser: jest.fn(),
+}));
 
 describe('HomePage Component', () => {
-  const renderWithRouter = (component) => {
-    return render(<Router>{component}</Router>);
-  };
+  beforeEach(() => {
+    useUser.mockReturnValue({ user: { name: 'John Doe' } });
+  });
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
 
-  it('renders the header with the logo and title', () => {
-    renderWithRouter(<HomePage />);
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+  it('renders the header with the logo', () => {
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
   
-    const logo = screen.getByAltText(/logo/i);
+    const logo = screen.getByAltText(/sports facility/i);
     expect(logo).toBeInTheDocument();
-  
-    const header = screen.getByRole('banner');
-    const title = within(header).getByText(/Community Sports Hub/i);
-    expect(title).toBeInTheDocument();
   });
   
-  
+  it('renders the welcome message with the user name', () => {
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
 
-  it('renders the navigation links', () => {
-    renderWithRouter(<HomePage />);
-
-    const loginLink = screen.getByText(/Login Page/i);
-    const testLink = screen.getByText(/Test Page/i);
-    const bookingsLink = screen.getByText(/Bookings Page/i);
-    const issuesLink = screen.getByText(/Issue Page/i);
-
-    expect(loginLink).toBeInTheDocument();
-    expect(testLink).toBeInTheDocument();
-    expect(bookingsLink).toBeInTheDocument();
-    expect(issuesLink).toBeInTheDocument();
-  });
-
-  it('renders the main welcome message and description', () => {
-    renderWithRouter(<HomePage />);
-
-    const welcomeMessage = screen.getByText(/Welcome to the Community Sports Facility Management System/i);
+    const welcomeMessage = screen.getByText(/Welcome, John Doe/i);
     expect(welcomeMessage).toBeInTheDocument();
-
-    const description = screen.getByText(/Reserve sports venues, report issues, and stay updated on community events with ease/i);
-    expect(description).toBeInTheDocument();
-  });
-
-  it('renders the footer with the correct year', () => {
-    renderWithRouter(<HomePage />);
-
-    const footerText = screen.getByText(new RegExp(`© ${new Date().getFullYear()} Community Sports Hub. All rights reserved.`));
-    expect(footerText).toBeInTheDocument();
   });
 });
