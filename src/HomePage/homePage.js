@@ -10,6 +10,8 @@ import '../HomePage/homePage.css';
 import '@fullcalendar/core/package.json';
 import '@fullcalendar/daygrid/package.json';
 
+
+
 const imagePaths = [
   '/images/entrance.png', '/images/miniPool.png', '/images/tennis.png',
   '/images/soccerField.png', '/images/cricket.png', '/images/archery.png',
@@ -19,6 +21,7 @@ const imagePaths = [
 ];
 
 const HomePage = () => {
+  const { userType } = useUser();
   const { user } = useUser();
   const [bookings, setBookings] = useState([]);
   const [events, setEvents] = useState([]);
@@ -80,7 +83,7 @@ const HomePage = () => {
              More than just a venue, <strong>SportsHub is a lifestyle destination</strong> — a place where families gather, friendships are forged, and memories are made, one game at a time.
           </p>
         </section>
-
+        {!(userType === 'default') && (
           <section className="homepage-info">
             <article className="info-block">
               <h3>Upcoming Events & Maintenance</h3>
@@ -99,11 +102,14 @@ const HomePage = () => {
 
             <article className="info-block">
               <h3>Your Bookings</h3>
-              <ul>
-                {bookings.length > 0 ? bookings.map((booking, idx) => (
-                  <li key={idx}> {booking.facility} on {booking.date}</li>
-                )) : <li>No bookings found</li>}
-              </ul>
+             
+                <ul>
+                  {bookings.length > 0 ? bookings.map((booking, idx) => (
+                    <li key={idx}> {booking.facility} on {booking.date}</li>
+                  )) : <li>No bookings found</li>}
+                </ul>
+              
+
             </article>
 
             <article className="info-block calendar-section">
@@ -119,6 +125,7 @@ const HomePage = () => {
               />
             </article>
           </section>
+           )}
         </section>
       </section>
 

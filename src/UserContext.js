@@ -11,8 +11,8 @@ export const useUser = () => {
 
 // Provider component
 export const UserProvider = ({ children }) => {
-  const [basename] = useState('example'); // Example value for basename
-  const [userType, setUserType] = useState('admin'); // Example value for userType
+  const [basename] = useState('default'); // Example value for basename
+  const [userType, setUserType] = useState('default'); // Example value for userType
 
   return (
     <UserContext.Provider value={{ basename, userType, setUserType }}>
