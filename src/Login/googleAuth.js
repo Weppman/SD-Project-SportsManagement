@@ -12,7 +12,7 @@ const GoogleSignIn = () => {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
-
+      console.log('Google sign-in result:', result); // Log the result for debugging
       if (result.user) {
         const user = result.user;
         const uid = user.uid;
@@ -30,13 +30,13 @@ const GoogleSignIn = () => {
             })
           });
 
-          setUserType('default');
-          navigate('/home');
+          setUserType('user');
+          navigate('/');
         } else if (response.ok) {
           // User exists, get role
           const data = await response.json();
           setUserType(data.UserType);
-          navigate('/home');
+          navigate('/');
         } else {
           console.error('Unexpected status code:', response.status);
         }

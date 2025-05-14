@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import IssuePage from './Issues/Issues';
 import BookingPage from './Bookings/bookingForm';
-import LoginPage from './Login/loginUI';
 import HomePage from './HomePage/homePage';
 import IssueUpdatePage from './Issues/issuesUpdate';
 import AdminHomePage from './Admin/adminHome';
@@ -29,8 +28,7 @@ function App() {
           <Route path="/updates" element={<IssueUpdatePage />} />
           <Route path="/issues" element={<IssuePage />} />
           <Route path="/bookings" element={<BookingPage />} />
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/admin" element={<AdminHomePage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/facilities" element={<Facilities/>}/>
