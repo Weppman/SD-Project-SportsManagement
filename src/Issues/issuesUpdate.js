@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Toolbar from '../ToolBar/toolBar';
 import { useUser } from '../UserContext';
 import '../Issues/issuesUpdate.css';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default function Issues() {
   const [feedback, setFeedback] = useState('');
@@ -110,14 +112,102 @@ export default function Issues() {
     return matchesDate && matchesFacility;
   });
 
-  const handleDownload = () => {
-    const blob = new Blob([JSON.stringify(filteredIssues, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'issues.json';
-    link.click();
-  };
+const handleDownload = async () => {
+  try {
+    const response = await fetch('https://getissuesdatafull-mokwbj4tsa-uc.a.run.app');
+    if (!response.ok) throw new Error('Failed to fetch issues');
+    const rawData = await response.json();
+
+    const formattedData = rawData.map(issue => ({
+      ...issue,
+      dateReported: issue.dateReported?.seconds
+        ? new Date(issue.dateReported.seconds * 1000)
+        : null,
+      dateResolved: issue.dateResolved?.seconds
+        ? new Date(issue.dateResolved.seconds * 1000)
+        : null,
+    }));
+
+    const grouped = {};
+    formattedData.forEach(issue => {
+      const date = issue.dateReported || new Date(0); // fallback to epoch
+      const year = date.getFullYear();
+      const month = date.toLocaleString('default', { month: 'long' });
+      const key = `${year}-${month}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(issue);
+    });
+
+    const sortedKeys = Object.keys(grouped).sort((a, b) => {
+      const [yearA, monthA] = a.split('-');
+      const [yearB, monthB] = b.split('-');
+      const dateA = new Date(`${monthA} 1, ${yearA}`);
+      const dateB = new Date(`${monthB} 1, ${yearB}`);
+      return dateA - dateB;
+    });
+
+    const doc = new jsPDF('landscape');
+
+    sortedKeys.forEach((key, index) => {
+      const [year, month] = key.split('-');
+      const issues = grouped[key];
+
+      if (index > 0) doc.addPage();
+      doc.setFontSize(14);
+      doc.text(`${month} ${year}`, 14, 20);
+
+      const headers = [
+        '#',
+        'Facility',
+        'Type',
+        'Description',
+        'Status',
+        'Feedback',
+        'Date Reported',
+        'Date Resolved',
+      ];
+
+      const rows = issues.map((issue, i) => [
+        i + 1,
+        issue.facility,
+        issue.type,
+        issue.description,
+        issue.status,
+        issue.feedback || '',
+        issue.dateReported ? issue.dateReported.toLocaleString() : '',
+        issue.dateResolved ? issue.dateResolved.toLocaleString() : '',
+      ]);
+
+      doc.autoTable({
+        startY: 30,
+        head: [headers],
+        body: rows,
+        theme: 'grid',
+        columnStyles: {
+          0: { cellWidth: 15 },
+          1: { cellWidth: 30 },
+          2: { cellWidth: 25 },
+          3: { cellWidth: 60 },
+          4: { cellWidth: 20 },
+          5: { cellWidth: 25 },
+          6: { cellWidth: 30 },
+          7: { cellWidth: 30 },
+        },
+        styles: {
+          cellPadding: 2,
+          fontSize: 10,
+          halign: 'center',
+        },
+        margin: { horizontal: 10 },
+      });
+    });
+
+    doc.save('issues_report.pdf');
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+  }
+};
+
 
   return (
     <>

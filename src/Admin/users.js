@@ -11,12 +11,17 @@ export default function Users() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://getuserdatafull-mokwbj4tsa-uc.a.run.app');
+        const response = await fetch('https://getenricheduserauthdata-mokwbj4tsa-uc.a.run.app/');
         if (!response.ok) {
           throw new Error('Cannot access Users database');
         }
         const data = await response.json();
-        setUsers(data); 
+        const enrichedUsers = data.users.map((user) => ({
+          id: user.id,
+          displayName: user.displayName,
+          UserType: user.UserType || 'user',
+        }));
+        setUsers(enrichedUsers);
       } catch (error) {
         console.error('Error fetching users:', error);
       }
@@ -34,7 +39,7 @@ export default function Users() {
     if (!selectedUser) return;
 
     const updatedUser = {
-      ...selectedUser,
+      id: selectedUser.id,
       UserType: role,
     };
 
@@ -51,15 +56,15 @@ export default function Users() {
         throw new Error('Failed to update user');
       }
 
-      const updatedUsersResponse = await fetch('https://getuserdatafull-mokwbj4tsa-uc.a.run.app');
-      const updatedUsersData = await updatedUsersResponse.json();
-
-      const fixedData = updatedUsersData.map(user => ({
-        UUID: user.UUID || Date.now(),
-        UserType: user.UserType || '',
+      // Refresh user list after update
+      const updatedResponse = await fetch('https://getenricheduserauthdata-mokwbj4tsa-uc.a.run.app/');
+      const updatedData = await updatedResponse.json();
+      const refreshedUsers = updatedData.users.map((user) => ({
+        id: user.id,
+        displayName: user.displayName,
+        UserType: user.UserType || 'user',
       }));
-
-      setUsers(fixedData);
+      setUsers(refreshedUsers);
       setSelectedUser(null);
       setRole('');
     } catch (error) {
@@ -78,17 +83,19 @@ export default function Users() {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Name</th>
                 <th>Role</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr
-                  key={user.UUID}
+                  key={user.id}
                   onClick={() => handleRowClick(user)}
-                  className={selectedUser?.UUID === user.UUID ? 'selected' : ''}
+                  className={selectedUser?.id === user.id ? 'selected' : ''}
                 >
-                  <td>{user.UUID}</td>
+                  <td>{user.id}</td>
+                  <td>{user.displayName}</td>
                   <td>{user.UserType}</td>
                 </tr>
               ))}
