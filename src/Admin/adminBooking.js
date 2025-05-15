@@ -5,6 +5,7 @@ import { Timestamp } from 'firebase/firestore';
 import Toolbar from '../ToolBar/toolBar';
 import { useUser} from '../UserContext';
 import { useCallback } from "react";
+import AdminToolbar from '../Admin/adminToolBar';
 
 export default function AdminBookings() {
   const userType = useUser();
@@ -21,11 +22,11 @@ export default function AdminBookings() {
     } catch (error) {
       console.error('Error fetching bookings:', error);
     }
-  }, []); // Add dependencies here if needed
+  }, []); 
   
   useEffect(() => {
     fetchBookings();
-  }, [fetchBookings]); // No ESLint warning now
+  }, [fetchBookings]); 
    const formatDate = (timestamp) => {
     const date = new Date(new Timestamp(timestamp.seconds, timestamp.nanoseconds).toDate());
     const year = date.getFullYear();
@@ -55,6 +56,18 @@ export default function AdminBookings() {
     setIsAscending(!isAscending); 
   };
   const handleApprove = async (id, date, timeSlot, venueID) => {
+    const now = new Date();
+    const bookingDate = new Timestamp(date.seconds, date.nanoseconds).toDate();
+  
+    const isToday = bookingDate.toDateString() === now.toDateString();
+    const bookingHour = parseInt(timeSlot.split(":")[0], 10);
+    const currentHour = now.getHours();
+    if (isToday && bookingHour <= currentHour) {
+      console.log("Auto-declining past booking for today at", timeSlot);
+      await handleDecline(id);
+      return; 
+    }
+  
     try {
       const response = await fetch('https://updatebookingdata-mokwbj4tsa-uc.a.run.app', {
         method: 'POST',
@@ -74,30 +87,25 @@ export default function AdminBookings() {
         setBookings(prevBookings => 
           prevBookings.map(booking => {
             const bookingDate = new Date(new Timestamp(booking.date.seconds, booking.date.nanoseconds).toDate());
-            console.log("Booking Date:",bookingDate.toDateString());
-            const approvedDate = new Date(new Timestamp(date.seconds,date.nanoseconds).toDate());
-            console.log("Date:",approvedDate.toDateString());
-            if(bookingDate.toDateString() === approvedDate.toDateString() &&  booking.timeSlot === timeSlot && booking.venueID === venueID && booking.id !== id){
-              console.log("test success");
-            }
+            const approvedDate = new Date(new Timestamp(date.seconds, date.nanoseconds).toDate());
             if (bookingDate.toDateString() === approvedDate.toDateString() && booking.timeSlot === timeSlot && booking.venueID === venueID && booking.id !== id) {
-              handleDecline(booking.id)
+              handleDecline(booking.id); 
               return { ...booking }; 
             }
             return booking;
           })
         );
-        setBookings(prevBookings =>
-          prevBookings.filter(booking => booking.id !== id)
+        setBookings(prevBookings => 
+          prevBookings.filter(booking => booking.id !== id) 
         );
-      }
-      else {
+      } else {
         console.error('Error updating booking:', result.message);
       }
     } catch (error) {
       console.error('Error updating booking:', error);
     }
   };
+  
   
   
 
@@ -147,9 +155,10 @@ export default function AdminBookings() {
 
   return (
     <>
-      <Toolbar userType={userType} />
+     <Toolbar userType={userType} />
+     {userType === 'admin' && <AdminToolbar />}
       <section id="admin-bookings-section">
-        <button id="auto-accept-button" onClick={handleAutoAccept}>Auto Accept Bookings</button>
+        <button id="auto-accept-button" onClick={handleAutoAccept}>Accept All Bookings</button>
         <label htmlFor="venue-filter" id="venue-filter-label">Filter by Venue:</label>
         <select 
           id="venue-filter" 

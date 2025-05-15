@@ -9,6 +9,7 @@ import UsersPage from './Admin/users';
 import Facilities from './Venues/facilities'
 import EventsPage from './Admin/events';
 import AdminBookings from './Admin/adminBooking';
+import AdminUsageTrends from './Admin/adminAnalytics';
 import { UserProvider } from './UserContext'; // <-- import your provider here
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
           <Route path="/facilities" element={<Facilities/>}/>
           <Route path="/adminBooking" element={<AdminBookings />} />
           <Route path="/events" element={<EventsPage />} />
-
+          <Route path="/adminAnalytics" element={<AdminUsageTrends />} />
         </Routes>
       </Router>
     </UserProvider>
