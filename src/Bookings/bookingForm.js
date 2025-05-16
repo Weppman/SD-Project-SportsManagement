@@ -6,9 +6,11 @@ import Toolbar from '../ToolBar/toolBar';
 import { useUser} from '../UserContext';
 import { useEffect,useCallback } from 'react';
 import {Timestamp } from 'firebase/firestore';
+import { auth } from "../Firebase/firebaseApp";
 
 
 const BookingForm = () => {
+  const user = auth.currentUser;
   const userType = useUser();
   const [date, setDate] = useState(new Date());
   const [showTimePopup, setShowTimePopup] = useState(false);
@@ -148,7 +150,8 @@ const BookingForm = () => {
       purpose: purpose,
       timeSlot: selectedTime,
       venueID: selectedVenue,
-      status: "pending"
+      status: "pending",
+      UUID: user.uid
     };
     try {
       const response = await fetch('https://addbookingdata-mokwbj4tsa-uc.a.run.app', {
