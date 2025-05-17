@@ -9,6 +9,7 @@ const AdminToolbar = () => {
       <button style={toolbarButtonStyle}>Bookings</button>
       </Link>
       <Link to="/events"><button style={toolbarButtonStyle}>Events</button></Link>
+      <Link to="/adminAnalytics"><button style={toolbarButtonStyle}>Analytics</button></Link>
       <button style={toolbarButtonStyle}>Facilities</button>
     </section>
   );

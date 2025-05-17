@@ -6,9 +6,11 @@ import Toolbar from '../ToolBar/toolBar';
 import { useUser} from '../UserContext';
 import { useEffect,useCallback } from 'react';
 import {Timestamp } from 'firebase/firestore';
+import { auth } from "../Firebase/firebaseApp";
 
 
 const BookingForm = () => {
+  const user = auth.currentUser;
   const userType = useUser();
   const [date, setDate] = useState(new Date());
   const [showTimePopup, setShowTimePopup] = useState(false);
@@ -59,24 +61,12 @@ const BookingForm = () => {
     return slots;
   };
   const getAvailableTimeSlots = () => {
-    if (!bookings || bookings.length === 0) {
-      return generateHourlySlots(); 
-    }
-    const selectedDateStr = Timestamp.fromDate(date).toDate().toDateString(); // 'date' is already a JS Date
-    const bookedSlots = bookings.filter((b) => {
-      const bookingDate = new Date(new Timestamp(b.date.seconds, b.date.nanoseconds).toDate());
-      if(bookingDate.toDateString() === selectedDateStr && b.status === "approved" && b.venueID === selectedVenue){
-      }
-      return (
-        b.venueID === selectedVenue &&
-        bookingDate.toDateString() === selectedDateStr &&
-        b.status === "approved"
-      );
-    }).map((b) => b.timeSlot);
-    return generateHourlySlots().filter((slot) => !bookedSlots.includes(slot));
-  };
-  const isFullyBooked = (dateObj) => {
-    const selectedDateStr = dateObj.toDateString(); // use the date passed into tileDisabled
+    const allSlots = generateHourlySlots();
+    const now = new Date();
+    const selectedDateStr = date.toDateString();
+    const todayStr = now.toDateString();
+  
+    // Filter bookings on the same date and venue
     const bookedSlots = bookings.filter((b) => {
       const bookingDate = new Timestamp(b.date.seconds, b.date.nanoseconds).toDate();
       return (
@@ -85,8 +75,48 @@ const BookingForm = () => {
         b.status === "approved"
       );
     }).map((b) => b.timeSlot);
-    return bookedSlots.length >= generateHourlySlots().length;
+  
+    // Filter out booked time slots
+    let availableSlots = allSlots.filter((slot) => !bookedSlots.includes(slot));
+  
+    // If selected date is today, also filter out past time slots
+    if (selectedDateStr === todayStr) {
+      const currentHour = now.getHours();
+      availableSlots = availableSlots.filter((slot) => {
+        const slotHour = parseInt(slot.split(":")[0], 10);
+        return slotHour > currentHour;
+      });
+    }
+  
+    return availableSlots;
   };
+  const isFullyBooked = (dateObj) => {
+    const selectedDateStr = dateObj.toDateString();
+    const now = new Date();
+    const isToday = selectedDateStr === now.toDateString();
+  
+    const bookedSlots = bookings.filter((b) => {
+      const bookingDate = new Timestamp(b.date.seconds, b.date.nanoseconds).toDate();
+      return (
+        b.venueID === selectedVenue &&
+        bookingDate.toDateString() === selectedDateStr &&
+        b.status === "approved"
+      );
+    }).map((b) => b.timeSlot);
+  
+    let totalSlots = generateHourlySlots();
+  
+    if (isToday) {
+      const currentHour = now.getHours();
+      totalSlots = totalSlots.filter((slot) => {
+        const slotHour = parseInt(slot.split(":")[0], 10);
+        return slotHour > currentHour;
+      });
+    }
+  
+    return bookedSlots.length >= totalSlots.length;
+  };
+  
   const getVenueCapacity = (venueName = selectedVenue) => {
     const venue = venues.find(v => v.Name === venueName);
     if(!venue){
@@ -120,7 +150,8 @@ const BookingForm = () => {
       purpose: purpose,
       timeSlot: selectedTime,
       venueID: selectedVenue,
-      status: "pending"
+      status: "pending",
+      UUID: user.uid
     };
     try {
       const response = await fetch('https://addbookingdata-mokwbj4tsa-uc.a.run.app', {
