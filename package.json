@@ -12,11 +12,13 @@
     "g": "^2.0.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.0",
+    "html2pdf.js": "^0.10.3",
     "react": "^19.1.0",
     "react-calendar": "^5.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^6.30.0",
     "react-scripts": "5.0.1",
+    "recharts": "^2.15.3",
     "serve": "^14.2.4",
     "web-vitals": "^2.1.4"
   },
