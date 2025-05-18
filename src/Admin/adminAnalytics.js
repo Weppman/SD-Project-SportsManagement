@@ -238,6 +238,7 @@ const downloadPDF = () => {
   return (
     <>
       <Toolbar userType={userType} />
+      <AdminToolbar />
       {userType === "admin" && <AdminToolbar />}
       <section id="usage-trends-section">
         <header className="tabs">

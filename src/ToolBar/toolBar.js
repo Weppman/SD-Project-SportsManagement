@@ -39,7 +39,8 @@ const Toolbar = () => {
       padding: '1rem',
       display: 'flex',
       justifyContent: 'space-between',
-      alignItems: 'center'
+      alignItems: 'center',
+      width: '100%'
     }}>
       
       <nav style={navStyle}>
