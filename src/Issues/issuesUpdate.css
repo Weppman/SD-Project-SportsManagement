@@ -1,91 +1,163 @@
 .issues-container {
-    display: flex;
-    height: calc(100vh - 60px);
-    padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 60px);
+  padding: 1rem;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: #0A475A;
+  color: white;
+  gap: 2rem;
+  width: 100%;
+}
+
+.issues-list {
+  flex: 3;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding-right: 1rem;
+}
+
+.filters {
+  margin-bottom: 1rem;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.filter-input, 
+.filter-select {
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #0A475A;
+  border-radius: 4px;
+}
+
+.filter-label {
+  color: #0A475A;
+  font-weight: bold;
+}
+
+.issues-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.issues-table th,
+.issues-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(10, 71, 90, 0.1);
+  color: #0A475A;
+}
+
+.issues-table th {
+  background-color: #0A475A;
+  color: white;
+  font-weight: bold;
+}
+
+.issues-table-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.issues-table-row:hover {
+  background-color: rgba(10, 71, 90, 0.1);
+}
+
+.issues-table-row.selected {
+  background-color: rgba(10, 71, 90, 0.2);
+}
+
+.no-issues {
+  padding: 1rem;
+  text-align: center;
+  color: #0A475A;
+  background: white;
+  border-radius: 8px;
+}
+
+.update-section {
+  flex: 2;
+  padding: 1rem;
+  overflow-y: auto;
+  background: white;
+  border-radius: 8px;
+  color: #0A475A;
+}
+
+.update-section h2 {
+  color: #0A475A;
+  margin-bottom: 1rem;
+}
+
+.update-input,
+.update-select,
+.update-textarea {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #0A475A;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.update-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.update-button {
+  padding: 0.75rem;
+  width: 100%;
+  background-color: #0A475A;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.update-button:hover {
+  background-color: #073642;
+}
+
+.download-button {
+  padding: 0.75rem;
+  width: 100%;
+  background-color: white;
+  font-weight: bold;
+  color: #0A475A;
+  border: 2px solid #0A475A;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+}
+
+.download-button:hover {
+  background-color: #0A475A;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .issues-container {
+    flex-direction: column;
+    height: auto;
   }
-  
+
   .issues-list {
-    flex: 3;
-    overflow-y: auto;
-    border-right: 1px solid #ccc;
-    padding-right: 1rem;
-  }
-  
-  .filters {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-right: 0;
+    padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
-  
-  .filter-input {
-    margin-left: 0.5rem;
-    padding: 0.5rem;
-  }
-  
-  .filter-select {
-    margin-left: 0.5rem;
-    padding: 0.5rem;
-  }
-  
-  .facility-label {
-    margin-left: 1rem;
-  }
-  
-  .issues-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .issues-table th,
-  .issues-table td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .issues-table-row {
-    cursor: pointer;
-  }
-  
-  .issues-table-row.selected {
-    background-color: #f0f0f0;
-  }
-  
-  .no-issues {
-    padding: 1rem;
-    text-align: center;
-    color: #777;
-  }
-  
-  .update-section {
-    flex: 2;
-    padding: 1rem;
-    overflow-y: auto;
-  }
-  
-  .update-input,
-  .update-select {
-    margin-top: 0.5rem;
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-  
-  .update-button {
-    padding: 0.5rem 1rem;
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .download-button {
-    padding: 0.5rem 1rem;
-    width: 100%;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
-  
+}
