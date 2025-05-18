@@ -10,7 +10,6 @@ const AdminToolbar = () => {
       </Link>
       <Link to="/events"><button style={toolbarButtonStyle}>Events</button></Link>
       <Link to="/adminAnalytics"><button style={toolbarButtonStyle}>Analytics</button></Link>
-      <button style={toolbarButtonStyle}>Facilities</button>
     </section>
   );
 };
@@ -22,6 +21,7 @@ const toolbarButtonStyle = {
   border: 'none',
   cursor: 'pointer',
   fontSize: '16px',
+   width: '100%'
 };
 
 export default AdminToolbar;

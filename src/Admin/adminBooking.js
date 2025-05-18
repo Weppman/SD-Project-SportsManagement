@@ -156,6 +156,7 @@ export default function AdminBookings() {
   return (
     <>
      <Toolbar userType={userType} />
+     <AdminToolbar />
      {userType === 'admin' && <AdminToolbar />}
       <section id="admin-bookings-section">
         <button id="auto-accept-button" onClick={handleAutoAccept}>Accept All Bookings</button>

@@ -3,6 +3,7 @@ import Toolbar from '../ToolBar/toolBar';
 import { useUser } from '../UserContext';
 import AdminToolbar from '../Admin/adminToolBar';
 
+
 export default function Events() {
   const { userType } = useUser();
 

@@ -16,27 +16,29 @@ function App() {
   return (
     <UserProvider> {/* <-- wrap your app with UserProvider */}
       <Router>
-      <header>
-          <nav>
-            <figure>
-              <img src="/logo.png" alt="SportsHub Logo" className="logo" />
-            </figure>
-          </nav>
-       </header>
+        <section style={{ width: '100%', margin: 0, padding: 0 }}></section>
+          <header style={{ width: '100%' }}>
+              <nav>
+                <figure>
+                  <img src="/logo.png" alt="SportsHub Logo" className="logo" />
+                </figure>
+              </nav>
+          </header>
 
 
-        <Routes>
-          <Route path="/updates" element={<IssueUpdatePage />} />
-          <Route path="/issues" element={<IssuePage />} />
-          <Route path="/bookings" element={<BookingPage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/admin" element={<AdminHomePage />} />
-          <Route path="/users" element={<UsersPage />} />
-          <Route path="/facilities" element={<Facilities/>}/>
-          <Route path="/adminBooking" element={<AdminBookings />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/adminAnalytics" element={<AdminUsageTrends />} />
-        </Routes>
+            <Routes>
+              <Route path="/updates" element={<IssueUpdatePage />} />
+              <Route path="/issues" element={<IssuePage />} />
+              <Route path="/bookings" element={<BookingPage />} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/admin" element={<AdminHomePage />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/facilities" element={<Facilities/>}/>
+              <Route path="/adminBooking" element={<AdminBookings />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/adminAnalytics" element={<AdminUsageTrends />} />
+            </Routes>
+          <section />
       </Router>
     </UserProvider>
   );

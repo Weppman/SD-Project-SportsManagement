@@ -30,7 +30,9 @@ body {
     z-index: 1;
     height: 90%; 
     border-radius: 10%;
-    margin-right: 10px;
+    max-width: none;
+    width: 100%;
+    margin: 0 auto;
 
 }
 
