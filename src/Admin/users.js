@@ -101,7 +101,7 @@ export default function Users() {
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan="3" className="no-users">
+                  <td colSpan="3" className="no-users" data-testid="no-users">
                     No users found.
                   </td>
                 </tr>
@@ -130,6 +130,7 @@ export default function Users() {
               <button
                 onClick={handleUpdate}
                 className="update-button"
+                data-testid="update-button"
               >
                 Update User
               </button>

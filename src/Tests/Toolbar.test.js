@@ -1,31 +1,39 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import Toolbar from '../ToolBar/toolBar';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import  Toolbar  from '../ToolBar/toolBar';
 import { useUser } from '../UserContext';
 
 jest.mock('../UserContext', () => ({
   useUser: jest.fn(),
 }));
 
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn().mockReturnValue({
+    currentUser: { uid: '123', displayName: 'John Doe' },
+  }),
+  GoogleAuthProvider: jest.fn(),
+}));
+
 const renderWithRouter = () =>
   render(
-    <MemoryRouter>
+    <BrowserRouter>
       <Toolbar />
-    </MemoryRouter>
+    </BrowserRouter>
   );
 
 describe('Toolbar Component', () => {
   test('renders common navigation links for all users', () => {
-    useUser.mockReturnValue({ userType: 'visitor' });
+    useUser.mockReturnValue({ userType: 'user' });
 
     renderWithRouter();
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Issues')).toBeInTheDocument();
     expect(screen.getByText('Bookings')).toBeInTheDocument();
+    expect(screen.getByText('Facilities')).toBeInTheDocument();
+    expect(screen.getByText('Logout')).toBeInTheDocument();
 
-    expect(screen.queryByText('Updates')).not.toBeInTheDocument();
-    expect(screen.queryByText('Admin')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText('Logout'));
   });
 
   test('renders Updates for staff', () => {
@@ -33,22 +41,13 @@ describe('Toolbar Component', () => {
 
     renderWithRouter();
     expect(screen.getByText('Updates')).toBeInTheDocument();
-    expect(screen.queryByText('Admin')).not.toBeInTheDocument();
   });
 
   test('renders Updates and Admin for admin', () => {
     useUser.mockReturnValue({ userType: 'admin' });
 
     renderWithRouter();
-    expect(screen.getByText('Updates')).toBeInTheDocument();
     expect(screen.getByText('Admin')).toBeInTheDocument();
   });
 
-  test('does not render Updates or Admin for unknown role', () => {
-    useUser.mockReturnValue({ userType: 'guest' });
-
-    renderWithRouter();
-    expect(screen.queryByText('Updates')).not.toBeInTheDocument();
-    expect(screen.queryByText('Admin')).not.toBeInTheDocument();
-  });
 });

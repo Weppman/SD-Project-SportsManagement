@@ -181,7 +181,6 @@ const timeSlotSummary = useMemo(() => {
 const downloadPDF = () => {
   const chartContainer = chartContainerRef.current;
   if (!chartContainer) {
-    console.log("Chart container not found.");
     return;
   }
   const headerText = document.getElementById("usage-trends-title").innerText;
@@ -284,7 +283,7 @@ const downloadPDF = () => {
         <h2 id="usage-trends-title">
           {showTimeSlotGraph ? "Usage Trends by Time Slot" : "Usage Trends by Facility"}
         </h2>
-        <section id="chart-container" ref={chartContainerRef}>
+        <section id="chart-container" ref={chartContainerRef} data-testid = 'chart'>
           <ResponsiveContainer width={1310} height={500}>
             {showTimeSlotGraph ? (
               <BarChart data={showPercentages ? timeSlotPercentChartData : timeSlotChartData}>
@@ -335,7 +334,7 @@ const downloadPDF = () => {
             )}
             </ResponsiveContainer>
           </section>
-          <section id="usage-summary">
+          <section id="usage-summary" data-testid= 'venue'>
               {!showTimeSlotGraph && usageSummary.map((summary, index) => (
               <article id="summary-item" key={index} className="summary-item">
                 <h3>{summary.month}</h3>
@@ -352,7 +351,7 @@ const downloadPDF = () => {
               ))}
           </section>
         {showTimeSlotGraph && timeSlotSummary?.mostBooked && (
-          <section style={{ textAlign: "center", marginTop: "20px" }}>
+          <section data-testid= 'time-slot' style={{ textAlign: "center", marginTop: "20px" }}>
             <p className="summary-text"><strong>Most Booked Time Slot:</strong> {timeSlotSummary.mostBooked.timeSlot} ({timeSlotSummary.mostBooked.total} bookings)</p>
             <p className="summary-text"><strong>Least Booked Time Slot:</strong> {timeSlotSummary.leastBooked.timeSlot} ({timeSlotSummary.leastBooked.total} bookings)</p>
             <p className="summary-text"><strong>Morning Total:</strong> {timeSlotSummary?.morningTotal}</p>

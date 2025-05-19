@@ -17,7 +17,6 @@ export default function AdminBookings() {
     try {
       const response = await fetch('https://getpendingfuturebookings-mokwbj4tsa-uc.a.run.app');
       const data = await response.json();
-      console.log('Fetched bookings:', data);
       setBookings(data.bookings);
     } catch (error) {
       console.error('Error fetching bookings:', error);
@@ -63,7 +62,6 @@ export default function AdminBookings() {
     const bookingHour = parseInt(timeSlot.split(":")[0], 10);
     const currentHour = now.getHours();
     if (isToday && bookingHour <= currentHour) {
-      console.log("Auto-declining past booking for today at", timeSlot);
       await handleDecline(id);
       return; 
     }
@@ -83,7 +81,6 @@ export default function AdminBookings() {
       const result = await response.json();
   
       if (response.ok) {
-        console.log('Booking status updated to approved');
         setBookings(prevBookings => 
           prevBookings.map(booking => {
             const bookingDate = new Date(new Timestamp(booking.date.seconds, booking.date.nanoseconds).toDate());
@@ -106,9 +103,6 @@ export default function AdminBookings() {
     }
   };
   
-  
-  
-
   const handleDecline = async (id) => {
     try {
       const response = await fetch('https://updatebookingdata-mokwbj4tsa-uc.a.run.app', {
@@ -125,7 +119,6 @@ export default function AdminBookings() {
       const result = await response.json();
   
       if (response.ok) {
-        console.log('Booking status updated to approved');
         setBookings(prevBookings => prevBookings.filter(booking => booking.id !== id));
       } else {
         console.error('Error updating booking:', result.message);
@@ -152,14 +145,13 @@ export default function AdminBookings() {
   ? bookings.filter(booking => booking.venueID === selectedVenue)
   : bookings;
 
-
   return (
     <>
      <Toolbar userType={userType} />
      <AdminToolbar />
      {userType === 'admin' && <AdminToolbar />}
       <section id="admin-bookings-section">
-        <button id="auto-accept-button" onClick={handleAutoAccept}>Accept All Bookings</button>
+        <button id="auto-accept-button" data-testid="accept-all" onClick={handleAutoAccept}>Accept All Bookings</button>
         <label htmlFor="venue-filter" id="venue-filter-label">Filter by Venue:</label>
         <select 
           id="venue-filter" 
@@ -208,13 +200,15 @@ export default function AdminBookings() {
                 <td>{booking.purpose}</td>
                 <td>
                   <button 
-                    id={"approve-button-booking"} 
+                    id={"approve-button-booking"}
+                    data-testid="approve" 
                     onClick={() => handleApprove(booking.id, booking.date, booking.timeSlot, booking.venueID)}
                   >
                     Approve
                   </button>
                   <button 
-                    id={"decline-button-booking"} 
+                    id={"decline-button-booking"}
+                    data-testid="decline" 
                     onClick={() => handleDecline(booking.id)}
                   >
                     Decline
