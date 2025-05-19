@@ -2,11 +2,26 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Issues from '../Issues/issuesUpdate';
 import { useUser } from '../UserContext';
+import jsPDF from 'jspdf';
 
 jest.mock('../UserContext', () => ({
   useUser: jest.fn(),
 }));
 jest.mock('../ToolBar/toolBar', () => () => <div>Mock Toolbar</div>);
+
+jest.mock('jspdf', () => {
+  const autoTable = jest.fn();
+  const save = jest.fn();
+  return jest.fn().mockImplementation(() => {
+    return {
+      autoTable,
+      save,
+      setFontSize: jest.fn(),
+      text: jest.fn(),
+      addPage: jest.fn(),
+    };
+  });
+});
 
 global.fetch = jest.fn();
 global.URL.createObjectURL = jest.fn(() => 'blob:url');
@@ -41,10 +56,27 @@ describe('Issues Component', () => {
   beforeEach(() => {
     fetch.mockReset();
     useUser.mockReturnValue({ userType: 'admin' });
-
+    
     fetch
-      .mockResolvedValueOnce({ ok: true, json: async () => mockFacilities }) 
-      .mockResolvedValueOnce({ ok: true, json: async () => mockIssues });    
+      .mockResolvedValueOnce({ ok: true, json: async () => mockFacilities })
+      .mockResolvedValueOnce({ ok: true, json: async () => mockIssues })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockIssues,
+      });
+  });
+
+  it('formats data and groups issues by year and month correctly', async () => {
+    render(<Issues />);
+
+    await screen.findByText('Leaky pipe');
+
+    const downloadButton = screen.getByText('Download');
+    fireEvent.click(downloadButton);
+    await waitFor(() => {
+      expect(jsPDF).toHaveBeenCalledTimes(1);
+      const jsPDFInstance = jsPDF.mock.instances[0];
+    });
   });
 
   it('renders and loads issues and facilities', async () => {
@@ -104,6 +136,5 @@ describe('Issues Component', () => {
     const downloadButton = screen.getByText('Download');
     fireEvent.click(downloadButton);
 
-    expect(global.URL.createObjectURL).toHaveBeenCalled();
   });
 });

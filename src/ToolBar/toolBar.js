@@ -11,11 +11,6 @@ const navStyle = {
   gap: '1.5rem',
 };
 
-
-
-
-
-
 const Toolbar = () => {
   const userType = useUser().userType; 
   const { setUserType } = useUser();
@@ -45,9 +40,6 @@ const Toolbar = () => {
       <nav style={navStyle}>
         {/* Common links for all users */}
         <Link to="/">Home</Link>
-        
-        
-
 
         {/* Staff-specific links */}
         {(userType === 'staff' || userType === 'admin' || userType === "user") && (

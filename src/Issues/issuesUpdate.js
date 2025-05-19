@@ -130,7 +130,7 @@ const handleDownload = async () => {
 
     const grouped = {};
     formattedData.forEach(issue => {
-      const date = issue.dateReported || new Date(0); // fallback to epoch
+      const date = issue.dateReported || new Date(0); 
       const year = date.getFullYear();
       const month = date.toLocaleString('default', { month: 'long' });
       const key = `${year}-${month}`;
