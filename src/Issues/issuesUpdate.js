@@ -14,6 +14,7 @@ export default function Issues() {
   const [facilities, setFacilities] = useState([]);
   const [filterFacility, setFilterFacility] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [sendEmail, setSendEmail] = useState(false); 
   const { userType } = useUser();
 
   useEffect(() => {
@@ -44,9 +45,8 @@ export default function Issues() {
           description: issue.description || '',
           feedback: issue.feedback || '',
           status: issue.status || '',
-          dateReported: issue.dateReported || '', 
+          dateReported: issue.dateReported || '',
         }));
-        
         setIssues(fixedData);
       } catch (error) {
         console.error('Error fetching issues:', error);
@@ -54,7 +54,6 @@ export default function Issues() {
         setIsLoading(false);
       }
     };
-    
 
     fetchFacilities();
     fetchIssues();
@@ -66,42 +65,57 @@ export default function Issues() {
     setStatus(issue.status);
   };
 
-  const handleUpdate = async () => {
-    if (!selectedIssue) return;
-  
-    const updatedIssue = {
-      ...selectedIssue,
-      feedback,
-      status,
-      ...(status === 'Resolved' && {
-        dateResolved: {
-          seconds: Math.floor(Date.now() / 1000),
-          nanoseconds: 0
-        }
-      })
-    };
-  
-    try {
-      const response = await fetch('https://updateissuesdata-mokwbj4tsa-uc.a.run.app', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedIssue),
-      });
-      if (!response.ok) throw new Error('Failed to update issue');
-  
-      const updatedIssues = issues.map(issue => 
-        issue.id === updatedIssue.id ? { ...issue, feedback, status } : issue
-      );
-      setIssues(updatedIssues);
-  
-      setSelectedIssue(null);
-      setFeedback('');
-      setStatus('');
-    } catch (error) {
-      console.error('Error updating issue:', error);
-    }
+const handleUpdate = async () => {
+  if (!selectedIssue) return;
+
+  const updatedIssue = {
+    ...selectedIssue,
+    feedback,
+    status,
+    ...(status === 'Resolved' && {
+      dateResolved: {
+        seconds: Math.floor(Date.now() / 1000),
+        nanoseconds: 0
+      }
+    })
   };
-  
+
+  try {
+    const response = await fetch('https://updateissuesdata-mokwbj4tsa-uc.a.run.app', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedIssue),
+    });
+
+    if (!response.ok) throw new Error('Failed to update issue');
+
+    const updatedIssues = issues.map(issue =>
+      issue.id === updatedIssue.id ? { ...issue, feedback, status } : issue
+    );
+    setIssues(updatedIssues);
+
+    if (sendEmail) {
+      try {
+        await fetch('https://sendemailmaintenancenotification-mokwbj4tsa-uc.a.run.app', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: updatedIssue.id })
+        });
+      } catch (error) {
+        console.error('Error sending email notification:', error);
+      }
+    }
+
+    setSelectedIssue(null);
+    setFeedback('');
+    setStatus('');
+    setSendEmail(false);
+  } catch (error) {
+    console.error('Error updating issue:', error);
+  }
+};
+
+
   const filteredIssues = issues.filter(issue => {
     const matchesDate = filterDate
       ? issue.date?.toLocaleDateString() === new Date(filterDate).toLocaleDateString()
@@ -112,102 +126,101 @@ export default function Issues() {
     return matchesDate && matchesFacility;
   });
 
-const handleDownload = async () => {
-  try {
-    const response = await fetch('https://getissuesdatafull-mokwbj4tsa-uc.a.run.app');
-    if (!response.ok) throw new Error('Failed to fetch issues');
-    const rawData = await response.json();
+  const handleDownload = async () => {
+    try {
+      const response = await fetch('https://getissuesdatafull-mokwbj4tsa-uc.a.run.app');
+      if (!response.ok) throw new Error('Failed to fetch issues');
+      const rawData = await response.json();
 
-    const formattedData = rawData.map(issue => ({
-      ...issue,
-      dateReported: issue.dateReported?.seconds
-        ? new Date(issue.dateReported.seconds * 1000)
-        : null,
-      dateResolved: issue.dateResolved?.seconds
-        ? new Date(issue.dateResolved.seconds * 1000)
-        : null,
-    }));
+      const formattedData = rawData.map(issue => ({
+        ...issue,
+        dateReported: issue.dateReported?.seconds
+          ? new Date(issue.dateReported.seconds * 1000)
+          : null,
+        dateResolved: issue.dateResolved?.seconds
+          ? new Date(issue.dateResolved.seconds * 1000)
+          : null,
+      }));
 
-    const grouped = {};
-    formattedData.forEach(issue => {
-      const date = issue.dateReported || new Date(0); 
-      const year = date.getFullYear();
-      const month = date.toLocaleString('default', { month: 'long' });
-      const key = `${year}-${month}`;
-      if (!grouped[key]) grouped[key] = [];
-      grouped[key].push(issue);
-    });
-
-    const sortedKeys = Object.keys(grouped).sort((a, b) => {
-      const [yearA, monthA] = a.split('-');
-      const [yearB, monthB] = b.split('-');
-      const dateA = new Date(`${monthA} 1, ${yearA}`);
-      const dateB = new Date(`${monthB} 1, ${yearB}`);
-      return dateA - dateB;
-    });
-
-    const doc = new jsPDF('landscape');
-
-    sortedKeys.forEach((key, index) => {
-      const [year, month] = key.split('-');
-      const issues = grouped[key];
-
-      if (index > 0) doc.addPage();
-      doc.setFontSize(14);
-      doc.text(`${month} ${year}`, 14, 20);
-
-      const headers = [
-        '#',
-        'Facility',
-        'Type',
-        'Description',
-        'Status',
-        'Feedback',
-        'Date Reported',
-        'Date Resolved',
-      ];
-
-      const rows = issues.map((issue, i) => [
-        i + 1,
-        issue.facility,
-        issue.type,
-        issue.description,
-        issue.status,
-        issue.feedback || '',
-        issue.dateReported ? issue.dateReported.toLocaleString() : '',
-        issue.dateResolved ? issue.dateResolved.toLocaleString() : '',
-      ]);
-
-      doc.autoTable({
-        startY: 30,
-        head: [headers],
-        body: rows,
-        theme: 'grid',
-        columnStyles: {
-          0: { cellWidth: 15 },
-          1: { cellWidth: 30 },
-          2: { cellWidth: 25 },
-          3: { cellWidth: 60 },
-          4: { cellWidth: 20 },
-          5: { cellWidth: 25 },
-          6: { cellWidth: 30 },
-          7: { cellWidth: 30 },
-        },
-        styles: {
-          cellPadding: 2,
-          fontSize: 10,
-          halign: 'center',
-        },
-        margin: { horizontal: 10 },
+      const grouped = {};
+      formattedData.forEach(issue => {
+        const date = issue.dateReported || new Date(0);
+        const year = date.getFullYear();
+        const month = date.toLocaleString('default', { month: 'long' });
+        const key = `${year}-${month}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(issue);
       });
-    });
 
-    doc.save('issues_report.pdf');
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-  }
-};
+      const sortedKeys = Object.keys(grouped).sort((a, b) => {
+        const [yearA, monthA] = a.split('-');
+        const [yearB, monthB] = b.split('-');
+        const dateA = new Date(`${monthA} 1, ${yearA}`);
+        const dateB = new Date(`${monthB} 1, ${yearB}`);
+        return dateA - dateB;
+      });
 
+      const doc = new jsPDF('landscape');
+
+      sortedKeys.forEach((key, index) => {
+        const [year, month] = key.split('-');
+        const issues = grouped[key];
+
+        if (index > 0) doc.addPage();
+        doc.setFontSize(14);
+        doc.text(`${month} ${year}`, 14, 20);
+
+        const headers = [
+          '#',
+          'Facility',
+          'Type',
+          'Description',
+          'Status',
+          'Feedback',
+          'Date Reported',
+          'Date Resolved',
+        ];
+
+        const rows = issues.map((issue, i) => [
+          i + 1,
+          issue.facility,
+          issue.type,
+          issue.description,
+          issue.status,
+          issue.feedback || '',
+          issue.dateReported ? issue.dateReported.toLocaleString() : '',
+          issue.dateResolved ? issue.dateResolved.toLocaleString() : '',
+        ]);
+
+        doc.autoTable({
+          startY: 30,
+          head: [headers],
+          body: rows,
+          theme: 'grid',
+          columnStyles: {
+            0: { cellWidth: 15 },
+            1: { cellWidth: 30 },
+            2: { cellWidth: 25 },
+            3: { cellWidth: 60 },
+            4: { cellWidth: 20 },
+            5: { cellWidth: 25 },
+            6: { cellWidth: 30 },
+            7: { cellWidth: 30 },
+          },
+          styles: {
+            cellPadding: 2,
+            fontSize: 10,
+            halign: 'center',
+          },
+          margin: { horizontal: 10 },
+        });
+      });
+
+      doc.save('issues_report.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
 
   return (
     <>
@@ -262,7 +275,7 @@ const handleDownload = async () => {
                     onClick={() => handleRowClick(issue)}
                     className={`issues-table-row ${selectedIssue?.id === issue.id ? 'selected' : ''}`}
                   >
-                    <td>{issue.dateReported?.seconds ? new Date(issue.dateReported.seconds * 1000).toLocaleString()   : 'Unknown'}</td>
+                    <td>{issue.dateReported?.seconds ? new Date(issue.dateReported.seconds * 1000).toLocaleString() : 'Unknown'}</td>
                     <td>{issue.facility}</td>
                     <td>{issue.type}</td>
                     <td>{issue.description}</td>
@@ -306,6 +319,16 @@ const handleDownload = async () => {
                   <option value="In Progress">In Progress</option>
                   <option value="Unresolved">Unresolved</option>
                 </select>
+              </section>
+              <section className="update-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={sendEmail}
+                    onChange={(e) => setSendEmail(e.target.checked)}
+                  />
+                  {' '}Send Email Notification
+                </label>
               </section>
               <button onClick={handleUpdate} className="update-button">Update Issue</button>
             </>
