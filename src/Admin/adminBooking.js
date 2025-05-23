@@ -77,7 +77,6 @@ export default function AdminBookings() {
         }),
       });
       const result = await response.json();
-      await triggerEmailNotification();
       if (response.ok) {
         setBookings(prevBookings => 
           prevBookings.map(booking => {
@@ -147,16 +146,16 @@ const triggerEmailNotification = async () => {
     const response = await fetch('https://sendemailnotification-mokwbj4tsa-uc.a.run.app', {
       method: 'POST',
     });
-
+     if (response.ok) {
+      alert('Booking reminders sent');
+    }
     if (!response.ok) {
-      console.error('Failed to trigger email notification');
+      console.log('Failed to trigger email notification');
     }
   } catch (error) {
     console.error('Error triggering email notification:', error);
   }
 };
-
-
 
   return (
     <>
@@ -231,6 +230,12 @@ const triggerEmailNotification = async () => {
             ))}
           </tbody>
         </table>
+        <button
+          id = "email-button"
+          onClick={triggerEmailNotification}
+          >
+            Send Booking Reminders
+        </button>
       </section>
     </>
   );
