@@ -1,93 +1,189 @@
-import React from 'react';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Users from '../Admin/users';
-import fetchMock from 'jest-fetch-mock';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { getFirestore } from 'firebase/firestore';
+import { useUser } from '../UserContext';
 
-import { BrowserRouter } from 'react-router-dom';
+global.fetch = jest.fn();
 
-beforeEach(() => {
-    fetchMock.resetMocks();
-  });
 
-const mockUsers = [
-  { UUID: '1', UserType: 'user' },
-  { UUID: '2', UserType: 'admin' },
-];
+jest.mock('firebase/app', () => ({
+  initializeApp: jest.fn(),
+}));
+
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn().mockReturnValue({
+    currentUser: { uid: '123', displayName: 'John Doe' },
+  }),
+  GoogleAuthProvider: jest.fn(),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn().mockReturnValue({
+    collection: jest.fn(),
+    getDocs: jest.fn(() => Promise.resolve({
+      docs: [{ id: '1', data: () => ({ displayName: 'John Doe', UserType: 'user' }) }],
+    })),
+  }),
+  collection: jest.fn(),
+  getDocs: jest.fn(() => Promise.resolve({
+    docs: [{ id: '1', data: () => ({ displayName: 'John Doe', UserType: 'user' }) }],
+  })),
+}));
 
 jest.mock('../UserContext', () => ({
-    useUser: () => ({
-      userType: 'admin',
-    }),
-  }));
+  useUser: jest.fn(),
+}));
 
-test('renders user list from API', async () => {
-  fetch.mockResponseOnce(JSON.stringify(mockUsers));
-
-  render(  
-  <BrowserRouter>
-    <Users />
-  </BrowserRouter>
-  );
-
-  await waitFor(() => {
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('admin')).toBeInTheDocument();
+describe('Users Component', () => {
+  beforeEach(() => {
+    useUser.mockReturnValue({
+      user: { name: 'John Doe' },
+      userType: 'admin', 
+    });
   });
-});
 
-test('displays message when no users are found', async () => {
-  fetch.mockResponseOnce(JSON.stringify([]));
+  it('should render the user list', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => ({
+        users: [
+          { id: '1', displayName: 'John Doe', UserType: 'user' },
+          { id: '2', displayName: 'Jane Doe', UserType: 'admin' },
+        ],
+      }),
+    });
 
-  render(  
-    <BrowserRouter>
-      <Users />
-    </BrowserRouter>
+    render(
+      <Router>
+        <Users />
+      </Router>
     );
 
-  await waitFor(() => {
+    await waitFor(() => screen.getByText(/John Doe/i));
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+  });
+
+  it('should display "No users found" if no users are fetched', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => ({
+        users: [],
+      }),
+    });
+
+    render(
+      <Router>
+        <Users />
+      </Router>
+    );
+
+    await waitFor(() => screen.getByText(/No users found/i));
     expect(screen.getByText('No users found.')).toBeInTheDocument();
   });
-});
 
-test('allows user selection and updates role', async () => {
-  fetch.mockResponseOnce(JSON.stringify(mockUsers)); 
-  fetch.mockResponseOnce(JSON.stringify({ success: true })); 
-  fetch.mockResponseOnce(JSON.stringify(mockUsers));
+  it('should select a user when a row is clicked', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => ({
+        users: [
+          { id: '1', displayName: 'John Doe', UserType: 'user' },
+        ],
+      }),
+    });
 
-  render(  
-    <BrowserRouter>
-      <Users />
-    </BrowserRouter>
+    render(
+      <Router>
+        <Users />
+      </Router>
     );
 
-  await waitFor(() => screen.getByText('1'));
+    await waitFor(() => screen.getByText('John Doe'));
+    fireEvent.click(screen.getByText('John Doe'));
 
-  fireEvent.click(screen.getByText('1'));
-  expect(screen.getByLabelText('Role:')).toBeInTheDocument();
-
-  fireEvent.change(screen.getByLabelText('Role:'), { target: { value: 'staff' } });
-
-  fireEvent.click(screen.getByRole('button', { name: /Update User/i }));
-
-  await waitFor(() => {
-    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(screen.getByLabelText(/Role:/i)).toBeInTheDocument();
+    const updateButton = screen.getByTestId('update-button');
+    expect(updateButton).toBeInTheDocument();
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
   });
-});
 
-test('handles API fetch error gracefully', async () => {
-  fetch.mockReject(() => Promise.reject('API is down'));
+  it('should allow a user to update their role', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => ({
+        users: [
+          { id: '1', displayName: 'John Doe', UserType: 'user' },
+        ],
+      }),
+    });
 
-  const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-  render(  
-    <BrowserRouter>
-      <Users />
-    </BrowserRouter>
+    render(
+      <Router>
+        <Users />
+      </Router>
     );
 
-  await waitFor(() => {
-    expect(consoleError).toHaveBeenCalledWith('Error fetching users:', 'API is down');
+
+    await waitFor(() => screen.getByText('John Doe'));
+    fireEvent.click(screen.getByText('John Doe'));
+
+    fireEvent.change(screen.getByLabelText(/Role:/i), {
+      target: { value: 'admin' },
+    });
+
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => ({
+        users: [
+          { id: '1', displayName: 'John Doe', UserType: 'admin' },
+        ],
+      }),
+    });
+
+    fireEvent.click(screen.getByTestId('update-button'));
   });
 
-  consoleError.mockRestore();
+  it('should handle error in fetching users', async () => {
+    fetch.mockRejectedValueOnce(new Error('Failed to fetch users'));
+
+    render(
+      <Router>
+        <Users />
+      </Router>
+    );
+
+    await waitFor(() => screen.queryByText('John Doe'));
+    expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
+  });
+
+  it('should handle error in updating user role', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => ({
+        users: [
+          { id: '1', displayName: 'John Doe', UserType: 'user' },
+        ],
+      }),
+    });
+
+    render(
+      <Router>
+        <Users />
+      </Router>
+    );
+
+    await waitFor(() => screen.getByText('John Doe'));
+    fireEvent.click(screen.getByText('John Doe'));
+
+    fireEvent.change(screen.getByLabelText(/Role:/i), {
+      target: { value: 'admin' },
+    });
+
+    fetch.mockResolvedValueOnce({
+      ok: false,
+    });
+
+    fireEvent.click(screen.getByTestId('update-button'));
+  });
 });

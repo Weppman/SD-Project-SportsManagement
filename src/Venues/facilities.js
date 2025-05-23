@@ -11,7 +11,6 @@ export default function Facilities() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch facilities data efficiently
   const fetchFacilities = useCallback(async () => {
     setIsLoading(true);
     setError(null);

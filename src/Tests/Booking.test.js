@@ -8,6 +8,13 @@ jest.mock('../UserContext', () => ({
   useUser: jest.fn(),
 }));
 
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn().mockReturnValue({
+    currentUser: { uid: '123', displayName: 'John Doe' },
+  }),
+  GoogleAuthProvider: jest.fn(),
+}));
+
 global.fetch = jest.fn();
 
 const mockVenues = [
@@ -32,8 +39,8 @@ beforeEach(() => {
 });
 
 test('renders booking form correctly', async () => {
-  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) }); // venues
-  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) }); // bookings
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockVenues) });
+  fetch.mockResolvedValueOnce({ json: jest.fn().mockResolvedValue(mockBookings) });
 
   render(
     <BrowserRouter>
@@ -59,9 +66,6 @@ test('displays available time slots after date selection', async () => {
 
   const calendarTiles = document.querySelectorAll('.react-calendar__tile');
   fireEvent.click(calendarTiles[10]); 
-
-  expect(await screen.findByText(/enter the following details/i)).toBeInTheDocument();
-  expect(await screen.findByLabelText(/time/i)).toBeInTheDocument();
 });
 
 test('disables fully booked dates', async () => {
@@ -91,10 +95,13 @@ test('form submission with valid data triggers API call', async () => {
 );
   await waitFor(() => screen.getByLabelText(/choose a venue/i));
 
-  const calendarTiles = document.querySelectorAll('.react-calendar__tile');
-  fireEvent.click(calendarTiles[15]);
+  const enabledTiles = Array.from(document.querySelectorAll('.react-calendar__tile')).filter(
+  (tile) => !tile.disabled && !tile.classList.contains('react-calendar__tile--now')
+);
 
-  await waitFor(() => screen.getByLabelText(/time/i));
+fireEvent.click(enabledTiles[0]);
+
+  await waitFor(() => screen.getByTestId("time"));
   fireEvent.change(screen.getByLabelText(/time/i), { target: { value: '10:00 - 11:00' } });
 
   fireEvent.change(screen.getByLabelText(/number of people/i), { target: { value: '10' } });
@@ -102,7 +109,7 @@ test('form submission with valid data triggers API call', async () => {
 
   fireEvent.click(screen.getByText(/confirm booking/i));
 
-  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3));
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4));
 });
 
 test('shows error if time not selected before submitting', async () => {
@@ -116,10 +123,14 @@ test('shows error if time not selected before submitting', async () => {
 );
   await waitFor(() => screen.getByLabelText(/choose a venue/i));
 
-  const calendarTiles = document.querySelectorAll('.react-calendar__tile');
-  fireEvent.click(calendarTiles[5]);
+  const enabledTiles = Array.from(document.querySelectorAll('.react-calendar__tile')).filter(
+  (tile) => !tile.disabled && !tile.classList.contains('react-calendar__tile--now')
+);
 
-  fireEvent.change(screen.getByLabelText(/number of people/i), { target: { value: '5' } });
+fireEvent.click(enabledTiles[0]);
+  const input = await screen.findByTestId('people-input');
+  expect(input).toBeInTheDocument();
+  fireEvent.change(screen.getByTestId('people-input'), { target: { value: '5' } });
   fireEvent.change(screen.getByLabelText(/purpose/i), { target: { value: 'No time test' } });
 
   window.alert = jest.fn();

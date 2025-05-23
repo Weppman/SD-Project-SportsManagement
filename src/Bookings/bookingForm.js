@@ -5,7 +5,7 @@ import './bookingForm.css';
 import Toolbar from '../ToolBar/toolBar';
 import { useUser} from '../UserContext';
 import { useEffect,useCallback } from 'react';
-import {Timestamp } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { auth } from "../Firebase/firebaseApp";
 
 
@@ -66,7 +66,6 @@ const BookingForm = () => {
     const selectedDateStr = date.toDateString();
     const todayStr = now.toDateString();
   
-    // Filter bookings on the same date and venue
     const bookedSlots = bookings.filter((b) => {
       const bookingDate = new Timestamp(b.date.seconds, b.date.nanoseconds).toDate();
       return (
@@ -76,10 +75,8 @@ const BookingForm = () => {
       );
     }).map((b) => b.timeSlot);
   
-    // Filter out booked time slots
     let availableSlots = allSlots.filter((slot) => !bookedSlots.includes(slot));
   
-    // If selected date is today, also filter out past time slots
     if (selectedDateStr === todayStr) {
       const currentHour = now.getHours();
       availableSlots = availableSlots.filter((slot) => {
@@ -231,7 +228,7 @@ const BookingForm = () => {
               <p id="selected-date">
                 <strong>Selected Date:</strong> {date.toDateString()}
               </p>
-              <label htmlFor="time-dropdown">
+              <label data-testid="time" htmlFor="time-dropdown">
                 <strong>Time:</strong>
                 <select
                   id="time-dropdown"
@@ -247,11 +244,12 @@ const BookingForm = () => {
                   ))}
                 </select>
               </label>
-              <section id="people-section" className="people-container">
+              <section id="people-section" className="people-container" >
                 <label htmlFor="people-input">
                   <strong>Number of people:</strong>
                   <input
                     id="people-input"
+                    data-testid="people-input"
                     type="number"
                     min="1"
                     max={getVenueCapacity()}

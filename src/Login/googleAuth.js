@@ -12,15 +12,13 @@ const GoogleSignIn = () => {
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      console.log('Google sign-in result:', result); // Log the result for debugging
       if (result.user) {
         const user = result.user;
         const uid = user.uid;
 
-        const response = await fetch(`https://getuserdatauuid-mokwbj4tsa-uc.a.run.app?UUID=${uid}`); // Removed space before ?
+        const response = await fetch(`https://getuserdatauuid-mokwbj4tsa-uc.a.run.app?UUID=${uid}`); 
 
         if (response.status === 404) {
-          // User doesn't exist, create with 'default' role
           await fetch('https://adduserdata-mokwbj4tsa-uc.a.run.app', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -33,7 +31,6 @@ const GoogleSignIn = () => {
           setUserType('user');
           navigate('/');
         } else if (response.ok) {
-          // User exists, get role
           const data = await response.json();
           setUserType(data.UserType);
           navigate('/');

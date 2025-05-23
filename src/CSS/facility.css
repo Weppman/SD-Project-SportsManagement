@@ -4,10 +4,12 @@
   gap: 2rem;
   background-color: #0A475A;
   color: white;
-  padding: 1rem;
-  overflow-x: hidden;
+  padding: 1rem 2rem; /* Add horizontal padding */
+  width: 100%;
+  box-sizing: border-box; /* Ensures padding doesn’t exceed width */
   min-height: 100vh;
 }
+
 
 .facilities-container p {
   color: #0A475A;
