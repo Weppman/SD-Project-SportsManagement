@@ -7,12 +7,12 @@ table {
   }
   
   th {
-    background-color:  #4a90e2;
+    background-color:  #0A475A;
     padding: 12px;
     text-align: left;
     font-weight: bold;
     border: 1px solid #0e0d0d;
-    color: #1a1a1a;
+    color: #ffffff;
   }
   
   td {
@@ -21,6 +21,7 @@ table {
     text-align: left;
     color: #1a1a1a;
     background-color: #ebe7e7;
+    color: #0A475A;
   }
   table {
     margin-top: 20px;
@@ -38,19 +39,6 @@ table {
     margin-right: 20px;
   }
   
-  .auto-accept-button button {
-    padding: 10px 16px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .auto-accept-button button:hover {
-    background-color: #357ab8;
-  }
   #venue-filter-label {
     font-size: 16px;
     margin-right: 10px;
@@ -76,6 +64,7 @@ table {
   }
 #admin-bookings-section {
   margin-top: 20px;
+  background-color: #f9f9f9;
 }
 
 #auto-accept-button, #venue-filter, #venue-filter-label {
@@ -106,15 +95,3 @@ table {
   width: 200px;
 }
 
-#auto-accept-button {
-  padding: 10px 20px;
-  background-color: #4a90e2;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#auto-accept-button:hover {
-  background-color: #3578e5;
-}

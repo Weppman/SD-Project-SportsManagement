@@ -57,7 +57,6 @@ export default function AdminBookings() {
   const handleApprove = async (id, date, timeSlot, venueID) => {
     const now = new Date();
     const bookingDate = new Timestamp(date.seconds, date.nanoseconds).toDate();
-  
     const isToday = bookingDate.toDateString() === now.toDateString();
     const bookingHour = parseInt(timeSlot.split(":")[0], 10);
     const currentHour = now.getHours();
@@ -77,9 +76,8 @@ export default function AdminBookings() {
           status: 'approved', 
         }),
       });
-  
       const result = await response.json();
-  
+      await triggerEmailNotification();
       if (response.ok) {
         setBookings(prevBookings => 
           prevBookings.map(booking => {
@@ -144,6 +142,21 @@ export default function AdminBookings() {
   const filteredBookings = selectedVenue
   ? bookings.filter(booking => booking.venueID === selectedVenue)
   : bookings;
+const triggerEmailNotification = async () => {
+  try {
+    const response = await fetch('https://sendemailnotification-mokwbj4tsa-uc.a.run.app', {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      console.error('Failed to trigger email notification');
+    }
+  } catch (error) {
+    console.error('Error triggering email notification:', error);
+  }
+};
+
+
 
   return (
     <>
@@ -173,7 +186,7 @@ export default function AdminBookings() {
                 aria-sort={isAscending ? 'ascending' : 'descending'}
               >
                 Date
-                <i className={`fa ${isAscending ? 'fa-sort-up' : 'fa-sort-down'}`} style={{ marginLeft: '5px' }} />
+                <i className={`fa ${isAscending ? 'fa-sort-up' : 'fa-sort-down'}`}/>
               </th>
               <th 
                 id="venue-header" 
@@ -182,7 +195,7 @@ export default function AdminBookings() {
                 aria-sort={isVenueAscending ? 'ascending' : 'descending'}
               >
                 Venue
-                <i className={`fa ${isVenueAscending ? 'fa-sort-up' : 'fa-sort-down'}`} style={{ marginLeft: '5px' }} />
+                <i className={`fa ${isVenueAscending ? 'fa-sort-up' : 'fa-sort-down'}`}/>
               </th>
               <th id="time-header">Time</th>
               <th id="num-people-header">Number of People</th>
