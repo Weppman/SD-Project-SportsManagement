@@ -1,5 +1,4 @@
-/* Main container styling */
-#usage-trends-section {
+#usage-trends-section{
     padding: none;
     background-color: #f9f9f9;
     border-radius: 8px;
@@ -11,55 +10,50 @@
     max-width: 100%;
 }
   
-  /* Title styling */
-  #usage-trends-section h2 {
+  #usage-trends-section h2{
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
     text-align: center;
   }
   
-  /* Chart container */
-  .recharts-wrapper {
+  .recharts-wrapper{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 500px; /* Increase height */
-    max-width: 1000px; /* Optional: widen chart */
-    margin: 0 auto; /* Center horizontally */
+    height: 500px; 
+    max-width: 1000px; 
+    margin: 0 auto; 
   }
   
-  /* Tooltip custom styling */
-  .recharts-tooltip-wrapper {
+  .recharts-tooltip-wrapper{
     background-color: #fff;
     border-color: #ddd;
     border-radius: 5px;
   }
   
-  .recharts-tooltip-label {
+  .recharts-tooltip-label{
     font-weight: bold;
     color: #333;
   }
   
-  .recharts-tooltip-item {
+  .recharts-tooltip-item{
     color: #333;
   }
   
-  /* Legend styling */
-  .recharts-legend-wrapper {
+  .recharts-legend-wrapper{
     font-size: 14px;
     color: #333;
   }
   
-  /* Styling for the tab labels */
-  .tabs {
+  .tabs{
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
     gap: 10px;
   }
-  .tab {
+  .tab{
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -69,26 +63,25 @@
     user-select: none;
   }
   
-  /* Style the selected label based on the associated radio input */
-  input[type="radio"]:checked + .tab {
+  input[type="radio"]:checked + .tab{
     background-color: #0A475A;
     color: white;
     border-color: #0A475A;
   }
-  /* Styling for the dynamic title */
-  #usage-trends-title {
+  
+  #usage-trends-title{
     font-size: 24px;
     margin-top: 20px;
     text-align: center;
     color: #333;
   } 
-.checkbox-container {
+.checkbox-container{
     display: flex;
     flex-direction: column;  
     gap: 10px; 
     margin: 10px 0; 
   }
-  .checkbox-container label {
+  .checkbox-container label{
     display: flex;
     align-items: center; 
     gap: 8px; 
@@ -98,7 +91,7 @@
     text-align: left; 
     width: 100%;  
   }
-  input[type="checkbox"] {
+  input[type="checkbox"]{
     width: 20px;
     height: 20px;
     border: 2px solid #0A475A;
@@ -109,18 +102,18 @@
     transition: background-color 0.3s ease, border-color 0.3s ease;
     flex-shrink: 0; 
   }
-  input[type="checkbox"]:checked {
+  input[type="checkbox"]:checked{
     background-color: #0A475A;
     border-color: #0A475A;
   }
-  input[type="checkbox"]:checked::before {
+  input[type="checkbox"]:checked::before{
     display: block;
     color: #fff;
     text-align: center;
     font-size: 14px;
     line-height: 18px;
   }
-  input[type="checkbox"]:focus {
+  input[type="checkbox"]:focus{
     outline: 2px solid #0A475A;  
   }
   input[type="checkbox"]:hover {
@@ -129,3 +122,14 @@
  .summary-text{
   color: #000;
  }
+ .checkbox-label{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+#time-slot{
+  text-align: center;
+  margin-top: "20px";
+}

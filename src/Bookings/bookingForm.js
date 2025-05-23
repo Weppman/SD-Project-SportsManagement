@@ -148,7 +148,7 @@ const BookingForm = () => {
       timeSlot: selectedTime,
       venueID: selectedVenue,
       status: "pending",
-      UUID: user.uid
+      UID: user.uid
     };
     try {
       const response = await fetch('https://addbookingdata-mokwbj4tsa-uc.a.run.app', {
@@ -168,7 +168,7 @@ const BookingForm = () => {
     }
     await fetchBookings();
     setShowTimePopup(false);
-    alert(`Booked ${selectedVenue} on ${date.toDateString()} at ${selectedTime} for ${numberOfPeople} people`);
+    alert(`Booking request for ${selectedVenue} on ${date.toDateString()} at ${selectedTime} for ${numberOfPeople} people`);
     setSelectedTime(null);
     setPurpose("");
     setNumberOfPeople(1);
@@ -181,8 +181,8 @@ const BookingForm = () => {
       <header id="booking-header">
         <h2 id="booking-title">Make a booking</h2>
       </header>
-      <main id="booking-main" className style={{ display: 'flex', width: '100%', height: '100%' }}>
-        <section id="calendar-section" style={{ width: showTimePopup ? '50%' : '100%', padding: '10px' }}>
+      <main id="booking-main">
+        <section id="calendar-section" style={{ width: showTimePopup ? '50%' : '100%',padding:"10px" }}>
           <section id="venue-selector" className="venue-selector">
             <label htmlFor="venue-select">
               Choose a Venue:
@@ -220,7 +220,7 @@ const BookingForm = () => {
           </section>
         </section>
         {showTimePopup && (
-          <section id="popup-section" style={{ width: '50%', padding: '10px', backgroundColor: '#ffffff' }}>
+          <section id="popup-section">
             <header id="popup-header">
               <h3 id="popup-title">Enter the following details</h3>
             </header>
@@ -283,7 +283,7 @@ const BookingForm = () => {
                   rows="4"/>
               </label>
             </main>
-            <footer id="popup-footer" style={{ marginTop: '1rem' }}>
+            <footer id="popup-footer">
               <button id="confirm-booking-button" onClick={handleConfirmBooking} disabled={isSubmitting}>
                 Confirm Booking
               </button>
