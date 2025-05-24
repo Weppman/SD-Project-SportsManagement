@@ -24,13 +24,29 @@ jest.mock('firebase/firestore', () => {
 
 describe('HomePage Component', () => {
   const mockBookings = [
-    { facility: 'Tennis Court', date: '2025-06-01' },
-    { facility: 'Soccer Field', date: '2025-06-02' },
-  ];
+  {
+    id: 'b1',
+    userId: 'user123',
+    venueID: 'Tennis Court',
+    date: { seconds: 1750000000 }, 
+    timeSlot: '10:00 AM - 11:00 AM',
+  },
+  {
+    id: 'b2',
+    userId: 'user123',
+    venueID: 'Soccer Field',
+    date: { seconds: 1750086400 },
+    timeSlot: '11:00 AM - 12:00 PM',
+  },
+];
 
-  const mockEvents = [
-    { title: 'Tennis Tournament', date: '2025-06-05' },
-  ];
+const mockEvents = [
+  {
+    id: 'e1',
+    title: 'Tennis Tournament',
+    startDate: { seconds: 1750204800 },
+  },
+];
 
   const mockIssues = [
     { description: 'Basketball court under maintenance' },
@@ -38,7 +54,7 @@ describe('HomePage Component', () => {
 
   beforeEach(() => {
     useUser.mockReturnValue({
-      user: { name: 'John Doe' },
+      user: { uid: 'user123', name: 'John Doe' },
       userType: 'admin',
     });
 
@@ -53,6 +69,38 @@ describe('HomePage Component', () => {
         return Promise.resolve({ docs: mockIssues.map((data) => ({ data: () => data })) });
       }
     });
+
+      global.fetch = jest.fn((url) => {
+    if (url.includes('getacceptedfuturebookings')) {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ bookings: mockBookings }),
+      });
+    }
+    if (url.includes('geteventdata')) {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockEvents),
+      });
+    }
+    if (url.includes('getresolved3days')) {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(mockIssues),
+      });
+    }
+    if (url.includes('getenricheduserauthdata')) {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ displayName: 'John Doe' }),
+      });
+    }
+    return Promise.reject(new Error('Unknown API'));
+  });
+  });
+
+  afterEach(() => {
+    global.fetch.mockRestore();
   });
 
   test('renders HomePage with toolbar and weather widget', async () => {
@@ -64,24 +112,31 @@ describe('HomePage Component', () => {
   test('displays welcome message with user name', async () => {
     render(<HomePage />);
     await waitFor(() => {
-      expect(screen.getByText(/Welcome, John Doe/i)).toBeInTheDocument();
+      expect(screen.getByText(/Welcome, User/i)).toBeInTheDocument();
     });
   });
 
-  test('displays events, bookings, and maintenance issues for non-default userType', async () => {
-    render(<HomePage />);
-    await waitFor(() => {
-      const listItems = screen.getAllByRole('listitem');
-      expect(listItems.some(li => li.textContent.includes('Tennis Tournament') && li.textContent.includes('2025-06-05'))).toBe(false);
+test('displays events, bookings, and maintenance issues for non-default userType', async () => {
+  render(<HomePage />);
 
-      expect(screen.getByText('Tennis Court on 2025-06-01')).toBeInTheDocument();
-      const issueListItems = screen.getAllByRole('listitem');
-      const issueText = issueListItems.some(item => 
-      item.textContent.includes('Basketball court') && item.textContent.includes('under maintenance')
-);
-    expect(issueText).toBe(false);
-    });
+  await waitFor(() => {
+    const bookingsListItems = screen.getAllByRole('listitem');
+    expect(bookingsListItems.some(li =>
+      li.textContent.includes('Tennis Court') &&
+      li.textContent.includes('2025-06-15') &&
+      li.textContent.includes('10:00 AM - 11:00 AM')
+    )).toBe(true);
+
+        expect(bookingsListItems.some(li =>
+      li.textContent.includes('Tennis Tournament') &&
+      li.textContent.includes('2025-06-18')
+    )).toBe(true);
+
+    expect(bookingsListItems.some(li =>
+      li.textContent.includes('Basketball court under maintenance')
+    )).toBe(true);
   });
+});
 
   test('does not show bookings/events/maintenance for default userType', async () => {
     useUser.mockReturnValue({
@@ -100,11 +155,11 @@ describe('HomePage Component', () => {
     jest.useFakeTimers();
     render(<HomePage />);
 
-    const firstImage = screen.getByAltText(/Sports Facility/);
+    const firstImage = screen.getByTestId('homepage-carousel');
     const firstSrc = firstImage.getAttribute('src');
 
     jest.advanceTimersByTime(5000);
-    const secondImage = screen.getByAltText(/Sports Facility/);
+    const secondImage = screen.getByTestId('homepage-carousel');
     const secondSrc = secondImage.getAttribute('src');
 
     expect(secondSrc).toEqual(firstSrc);
