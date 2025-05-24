@@ -30,8 +30,6 @@ const safeDateConversion = (timestamp) => {
 
 const HomePage = () => {
   const { userType, user } = useUser();
-
-
   const [bookings, setBookings] = useState([]);
   const [events, setEvents] = useState([]);
   const [issues, setIssues] = useState([]);
@@ -62,11 +60,17 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-  if (user && users.length > 0) {
-    const currentUser = users.find(u => u.uid === user);
-    if (currentUser) setUserName(currentUser.displayName);
-  }
-}, [user, users]);
+    if (user && users.length > 0) {
+      const currentUser = users.find(u => u.uid === user);
+      if (currentUser) {
+        setUserName(currentUser.displayName);
+      } else {
+        setUserName('User'); // fallback if no matching user found
+      }
+    } else {
+      setUserName('User'); // reset name on logout or when user is null
+    }
+  }, [user, users]);
 
   useEffect(() => {
     const fetchData = async () => {
