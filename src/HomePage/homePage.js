@@ -147,9 +147,9 @@ const HomePage = () => {
           {userType !== 'default' && (
             <section className="homepage-info">
               <article className="info-block">
-                <h3>Upcoming Events</h3>
+                <h3>Upcoming Event</h3>
                 {loading ? (
-                  <p>Loading events...</p>
+                  <p>Loading event...</p>
                 ) : events.length > 0 ? (
                   <ul className="event-list-homepage">
                     {events.map(event => (
