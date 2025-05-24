@@ -1,24 +1,31 @@
 import React from 'react';
 import Toolbar from '../ToolBar/toolBar';
 import { useUser } from '../UserContext';
-import AdminToolbar from '../Admin/adminToolBar'
+import AdminToolbar from '../Admin/adminToolBar';
 
 export default function AdminPage() {
-  const {userType} = useUser(); 
+  const { userType } = useUser(); 
 
   return (
     <>
-      <Toolbar userType={userType} />
-      <AdminToolbar/>
-
-      <section style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 60px)', padding: '1rem' }}>
-        <section style={{ marginBottom: '1rem' }}>
+      <main style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100vh', 
+        minWidth: '100vw',
+        width: '100%',
+        padding: '1rem',
+        boxSizing: 'border-box',
+      }}>
+        <Toolbar userType={userType} style={{ width: '100%', minWidth: '100vw' }} />
+        <AdminToolbar style={{ width: '100%', minWidth: '100vw' }} />
+        <section style={{ marginBottom: '1rem', width: '100%' }}>
           <h2>Admin Dashboard</h2>
         </section>
         <section>
           <p>Welcome to the Admin Dashboard. Manage Users, Bookings, and Events.</p>
-          </section>
-      </section>
+        </section>
+      </main>
     </>
   );
 }

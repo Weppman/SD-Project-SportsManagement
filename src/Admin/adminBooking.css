@@ -1,85 +1,51 @@
+
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    border: 1px solid #ffffff;
-    font-family: Arial, sans-serif;
-  }
-  
-  th {
-    background-color:  #0A475A;
-    padding: 12px;
-    text-align: left;
-    font-weight: bold;
-    border: 1px solid #0e0d0d;
-    color: #ffffff;
-  }
-  
-  td {
-    padding: 12px;
-    border: 1px solid #0c0c0c;
-    text-align: left;
-    color: #1a1a1a;
-    background-color: #ebe7e7;
-    color: #0A475A;
-  }
-  table {
-    margin-top: 20px;
-  }
-  th, td {
-    text-align: center;
-  }
-  td button {
-    width: 100px;
-    margin: 5px;
-  }
-  .auto-accept-button {
-    margin-top: 20px;
-    text-align: right;
-    margin-right: 20px;
-  }
-  
-  #venue-filter-label {
-    font-size: 16px;
-    margin-right: 10px;
-    font-weight: bold;
-    color: #1a1a1a;
-  }
-  
-  #venue-filter {
-    font-size: 14px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f7f7f7;
-    color: #1a1a1a;
-    cursor: pointer;
-    width: 200px;
-    margin-bottom: 20px;
-  }
-  
-  #venue-filter option {
-    font-size: 14px;
-    padding: 10px;
-  }
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  border: 1px solid #ffffff;
+  background-color: var(--Blue);
+}
+
+th {
+  background-color: #0A475A;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #0e0d0d;
+  color: #ffffff;
+}
+
+td {
+  padding: 12px;
+  border: 1px solid #0c0c0c;
+  text-align: center;
+  color: #0A475A;
+  background-color: #ebe7e7;
+}
+
+td button {
+  width: 100px;
+  margin: 5px;
+}
+
 #admin-bookings-section {
   margin-top: 20px;
-  background-color: #f9f9f9;
+  background-color: var(--White);
+  width: 100%;
+  min-width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-#auto-accept-button, #venue-filter, #venue-filter-label {
-  margin-bottom: 10px;
+#auto-accept-button {
+  margin-top: 20px;
+  text-align: center;
 }
 
-#admin-bookings-section > button, 
-#admin-bookings-section > label, 
-#admin-bookings-section > select {
-  display: inline-block;
-  margin-right: 15px;
-  vertical-align: middle;
-}
-
-#venue-filter-label {
+#venue-filter-label,
+#venue-filter {
   font-size: 16px;
   font-weight: bold;
   color: #1a1a1a;
@@ -93,5 +59,32 @@ table {
   color: #1a1a1a;
   cursor: pointer;
   width: 200px;
+  margin-bottom: 20px;
 }
 
+/* Aligning Filter and Buttons */
+#venue-filter, #venue-filter-label, #auto-accept-button {
+  display: inline-block;
+  margin-right: 15px;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+
+#admin-bookings-section > button, 
+#admin-bookings-section > label, 
+#admin-bookings-section > select {
+  display: inline-block;
+  margin-right: 15px;
+  vertical-align: middle;
+}
+
+/* Venue Filter Option Styling */
+#venue-filter option {
+  font-size: 14px;
+  padding: 10px;
+}
+
+.react-calendar__tile:hover {
+  background-color: #7fa7d4 !important;
+  cursor: pointer;
+}

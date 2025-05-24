@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 const navStyle = {
   display: 'flex',
   gap: '1.5rem',
+  fontweight: 'bold',
+  padding: '0.5rem',
 };
 
 const Toolbar = () => {
@@ -35,7 +37,9 @@ const Toolbar = () => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      width: '100%'
+      maxWidth: '100%',
+      overflowX: 'hidden',
+      overflowY: 'hidden',
     }}>
       
       <nav style={navStyle}>

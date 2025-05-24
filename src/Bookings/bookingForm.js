@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './bookingForm.css'; 
 import Toolbar from '../ToolBar/toolBar';
-import { useUser} from '../UserContext';
-import { useEffect,useCallback } from 'react';
+import { useUser } from '../UserContext';
 import { Timestamp } from 'firebase/firestore';
 import { auth } from "../Firebase/firebaseApp";
-
 
 const BookingForm = () => {
   const user = auth.currentUser;
@@ -15,12 +13,13 @@ const BookingForm = () => {
   const [date, setDate] = useState(new Date());
   const [showTimePopup, setShowTimePopup] = useState(false);
   const [selectedTime, setSelectedTime] = useState('');
-  const[bookings,setBookings] = useState([]);
-  const[venues,setVenues] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [numberOfPeople, setNumberOfPeople] = useState(1);
   const [purpose, setPurpose] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const fetchBookings = useCallback(async () => {
     try {
       const response = await fetch('https://getacceptedfuturebookings-mokwbj4tsa-uc.a.run.app');
@@ -30,26 +29,31 @@ const BookingForm = () => {
       console.error('Error fetching bookings:', error);
     }
   }, []);
-    const fetchvenues = async () => {
-      try {
-        const response = await fetch('https://getvenuedatafull-mokwbj4tsa-uc.a.run.app'); 
-        const data = await response.json();
-        setVenues(data);
-      } catch (error) {
-        console.error('Error fetching venues:', error);
-      }
-    };
-    useEffect(()=>{
-      fetchvenues();
-    },[])
-    useEffect(() => {
-      fetchBookings();
-    }, [fetchBookings]);
+
+  const fetchVenues = async () => {
+    try {
+      const response = await fetch('https://getvenuedatafull-mokwbj4tsa-uc.a.run.app'); 
+      const data = await response.json();
+      setVenues(data);
+    } catch (error) {
+      console.error('Error fetching venues:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchVenues();
+  }, []);
+  
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
+
   useEffect(() => {
     if (venues && venues.length > 0) {
       setSelectedVenue(venues[0].Name);
     }
   }, [venues]);
+
   const generateHourlySlots = () => {
     const slots = [];
     for (let hour = 8; hour < 17; hour++) { 
@@ -60,12 +64,13 @@ const BookingForm = () => {
     }
     return slots;
   };
+
   const getAvailableTimeSlots = () => {
     const allSlots = generateHourlySlots();
     const now = new Date();
     const selectedDateStr = date.toDateString();
     const todayStr = now.toDateString();
-  
+
     const bookedSlots = bookings.filter((b) => {
       const bookingDate = new Timestamp(b.date.seconds, b.date.nanoseconds).toDate();
       return (
@@ -74,9 +79,9 @@ const BookingForm = () => {
         b.status === "approved"
       );
     }).map((b) => b.timeSlot);
-  
+
     let availableSlots = allSlots.filter((slot) => !bookedSlots.includes(slot));
-  
+
     if (selectedDateStr === todayStr) {
       const currentHour = now.getHours();
       availableSlots = availableSlots.filter((slot) => {
@@ -84,14 +89,15 @@ const BookingForm = () => {
         return slotHour > currentHour;
       });
     }
-  
+
     return availableSlots;
   };
+
   const isFullyBooked = (dateObj) => {
     const selectedDateStr = dateObj.toDateString();
     const now = new Date();
     const isToday = selectedDateStr === now.toDateString();
-  
+
     const bookedSlots = bookings.filter((b) => {
       const bookingDate = new Timestamp(b.date.seconds, b.date.nanoseconds).toDate();
       return (
@@ -100,9 +106,9 @@ const BookingForm = () => {
         b.status === "approved"
       );
     }).map((b) => b.timeSlot);
-  
+
     let totalSlots = generateHourlySlots();
-  
+
     if (isToday) {
       const currentHour = now.getHours();
       totalSlots = totalSlots.filter((slot) => {
@@ -110,39 +116,40 @@ const BookingForm = () => {
         return slotHour > currentHour;
       });
     }
-  
+
     return bookedSlots.length >= totalSlots.length;
   };
-  
+
   const getVenueCapacity = (venueName = selectedVenue) => {
     const venue = venues.find(v => v.Name === venueName);
-    if(!venue){
+    if (!venue) {
       return 1;
     }
-    if(typeof venue.Capacity === "object"){
+    if (typeof venue.Capacity === "object") {
       const totalCap = Object.values(venue.Capacity).reduce((sum, num) => sum + num, 0);
       return totalCap;
-    }
-    else{
-      return venue.Capacity
+    } else {
+      return venue.Capacity;
     }
   };
+
   const handleDateChange = (newDate) => {
     setDate(newDate);
     setShowTimePopup(true);
   };
+
   const handleConfirmBooking = async () => {
-    if (isSubmitting){
+    if (isSubmitting) {
       return;
-    } 
+    }
     if (!selectedTime) {
       alert('Please select a time!');
-      return; 
+      return;
     }
     const dateTimestamp = Timestamp.fromDate(date);
     setIsSubmitting(true);
     const bookingData = {
-      date:dateTimestamp,
+      date: dateTimestamp,
       numPeople: numberOfPeople,
       purpose: purpose,
       timeSlot: selectedTime,
@@ -174,130 +181,107 @@ const BookingForm = () => {
     setNumberOfPeople(1);
     setIsSubmitting(false);
   };
+
   return (
     <>
-    <Toolbar userType={userType} />
-    <section id="booking-form">
-      <header id="booking-header">
-        <h2 id="booking-title">Make a booking</h2>
-      </header>
-      <main id="booking-main">
-        <section id="calendar-section" style={{ width: showTimePopup ? '50%' : '100%',padding:"10px" }}>
-          <section id="venue-selector" className="venue-selector">
-            <label htmlFor="venue-select">
-              Choose a Venue:
-              <select
-                id="venue-select"
-                value={selectedVenue}
-                onChange={(e) => {
-                  const newVenue = e.target.value;
-                  setSelectedVenue(newVenue);
-                  const maxCap = getVenueCapacity(newVenue);
-                  setNumberOfPeople((prev) => Math.min(prev, maxCap));
-                  const availableSlots = getAvailableTimeSlots(newVenue);
-                  if (!availableSlots.includes(selectedTime)) {
-                    setSelectedTime('');
-                  }
-                }}>
-                {venues.map((venue) => (
-                  <option key={venue.id} value={venue.Name}>
-                    {venue.Name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </section>
-          <section id="calendar-container" className="popup-calender-container">
-            <section id="calendar" className="calender">
-              <Calendar
-                id="booking-calendar"
-                onChange={handleDateChange}
-                value={date}
-                minDate={new Date()}
-                maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
-                tileDisabled={({ date }) => isFullyBooked(date)}/>
-            </section>
-          </section>
-        </section>
-        {showTimePopup && (
-          <section id="popup-section">
-            <header id="popup-header">
-              <h3 id="popup-title">Enter the following details</h3>
-            </header>
-            <main id="popup-main" className="popup-container">
-              <p id="selected-date">
-                <strong>Selected Date:</strong> {date.toDateString()}
-              </p>
-              <label data-testid="time" htmlFor="time-dropdown">
-                <strong>Time:</strong>
+      <main id="booking-form" style={{ marginTop: '50px' }}>
+        <Toolbar userType={userType} />
+        <header id="booking-header">
+          <h2 id="booking-title">Make a booking</h2>
+        </header>
+        <main id="booking-main" style={{ display: 'flex', width: '100%' }}>
+          <section id="calendar-section" style={{ width: showTimePopup ? '50%' : '100%', padding: "10px" }}>
+            <section id="venue-selector" className="venue-selector">
+              <label htmlFor="venue-select">
+                Choose a Venue:
                 <select
-                  id="time-dropdown"
-                  value={selectedTime}
-                  className="time-dropdown"
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  required>
-                  <option value="">Select a time</option>
-                  {getAvailableTimeSlots().map((timeSlot, index) => (
-                    <option key={index} value={timeSlot}>
-                      {timeSlot}
+                  id="venue-select"
+                  value={selectedVenue}
+                  onChange={(e) => {
+                    const newVenue = e.target.value;
+                    setSelectedVenue(newVenue);
+                    const maxCap = getVenueCapacity(newVenue);
+                    setNumberOfPeople((prev) => Math.min(prev, maxCap));
+                    const availableSlots = getAvailableTimeSlots(newVenue);
+                    if (!availableSlots.includes(selectedTime)) {
+                      setSelectedTime('');
+                    }
+                  }}>
+                  {venues.map((venue) => (
+                    <option key={venue.id} value={venue.Name}>
+                      {venue.Name}
                     </option>
                   ))}
                 </select>
               </label>
-              <section id="people-section" className="people-container" >
-                <label htmlFor="people-input">
-                  <strong>Number of people:</strong>
+            </section>
+            <section id="calendar-container" className="popup-calender-container">
+              <section id="calendar" className="calender">
+                <Calendar
+                  id="booking-calendar"
+                  onChange={handleDateChange}
+                  value={date}
+                  minDate={new Date()}
+                  maxDate={new Date(new Date().setFullYear(new Date().getFullYear() + 1))}
+                  tileDisabled={({ date }) => isFullyBooked(date)} />
+              </section>
+            </section>
+          </section>
+          {showTimePopup && (
+            <section id="popup-section">
+              <header id="popup-header">
+                <h3 id="popup-title">Enter the following details</h3>
+              </header>
+              <main id="popup-main" className="popup-container">
+                <p id="selected-date">
+                  <strong>Selected Date:</strong> {date.toDateString()}
+                </p>
+                <label data-testid="time" htmlFor="time-dropdown">
+                  <strong>Time:</strong>
+                  <select
+                    id="time-dropdown"
+                    value={selectedTime}
+                    className="time-dropdown"
+                    onChange={(e) => setSelectedTime(e.target.value)}
+                    required>
+                    <option value="">Select a time</option>
+                    {getAvailableTimeSlots().map((timeSlot, index) => (
+                      <option key={index} value={timeSlot}>
+                        {timeSlot}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label htmlFor="people">
+                  <strong>Number of People:</strong>
                   <input
-                    id="people-input"
-                    data-testid="people-input"
+                    id="people"
                     type="number"
-                    min="1"
-                    max={getVenueCapacity()}
                     value={numberOfPeople}
                     onChange={(e) => setNumberOfPeople(e.target.value)}
-                    onBlur={(e) => {
-                      const input = parseInt(e.target.value, 10);
-                      const max = getVenueCapacity();
-                      if (isNaN(input) || input < 1) {
-                        setNumberOfPeople(1);
-                      } else if (input > max) {
-                        alert(`Maximum capacity for this venue is ${max}`);
-                        setNumberOfPeople(max);
-                      } else {
-                        setNumberOfPeople(input);
-                      }
-                    }}
-                    required
-                    className="people-input"/>
+                    min="1"
+                    max={getVenueCapacity()}
+                    required />
                 </label>
-              </section>
-              <label htmlFor="purpose-input">
-                <strong>Purpose:</strong>
-                <textarea
-                  id="purpose-input"
-                  value={purpose}
-                  onChange={(e) => setPurpose(e.target.value)}
-                  required
-                  className="purpose-input"
-                  placeholder="e.g., Birthday party, practice, etc."
-                  rows="4"/>
-              </label>
-            </main>
-            <footer id="popup-footer">
-              <button id="confirm-booking-button" onClick={handleConfirmBooking} disabled={isSubmitting}>
-                Confirm Booking
-              </button>
-              <button id="cancel-button" onClick={() => setShowTimePopup(false)}>
-                Cancel
-              </button>
-            </footer>
-          </section>
-        )}
+                <label htmlFor="purpose">
+                  <strong>Purpose of Booking:</strong>
+                  <textarea
+                    id="purpose"
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    placeholder="Please provide a purpose for your booking"
+                    required />
+                </label>
+                <button type="button" onClick={handleConfirmBooking} className="submit-button">
+                  {isSubmitting ? "Processing..." : "Confirm Booking"}
+                </button>
+              </main>
+            </section>
+          )}
+        </main>
       </main>
-    </section>
-  </>
+    </>
   );
 };
-
 
 export default BookingForm;

@@ -1,16 +1,17 @@
-/* Users.css */
-
 .main-container {
-    display: flex;
     height: calc(100vh - 60px);
     padding: 1rem;
+    width: 90%;
+    min-width: 100vw;
+    box-sizing: border-box;
   }
+
   
   .user-list-section {
     flex: 3;
     overflow-y: auto;
-    border-right: 1px solid #ccc;
-    padding-right: 1rem;
+    border-left: 1px solid #ccc;
+    padding-left: 1rem;
   }
   
   .user-list-section table {

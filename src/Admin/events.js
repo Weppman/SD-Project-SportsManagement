@@ -154,10 +154,9 @@ export default function Events() {
 
   return (
     <>
-      <Toolbar userType={userType} />
-      {userType === 'admin' && <AdminToolbar />}
-
-      <section className="events-container">
+      <main className="events-container">
+        <Toolbar userType={userType} />
+        {userType === 'admin' && <AdminToolbar />}
         <header className="events-header">
           <h1>Upcoming Events</h1>
           {userType === 'admin' && (
@@ -305,7 +304,7 @@ export default function Events() {
             </section>
           </article>
         )}
-      </section>
+      </main>
     </>
   );
 }

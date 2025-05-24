@@ -1,163 +1,242 @@
 .homepage-container {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    background-color: #0A475A;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .homepage-header-carousel {
-    width: 100%;
-    height: 300px;
-    overflow: hidden;
-  }
-  
-  .carousel-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    animation: fadeIn 1s ease-in;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  .homepage-main-layout {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 2rem;
-    padding: 2rem;
-  }
-  
-  .weather-sidebar {
-    flex: 0 0 300px;
-    background-color: white;
-    color: #0A475A;
-    border-radius: 10px;
-    padding: 1rem;
-    height: fit-content;
-  }
-  
-  .homepage-main {
-    flex: 1;
-    padding: 1rem;
-  }
-  
-  .homepage-main h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-    color: white;
-  }
-  
-  .homepage-main p {
-    font-size: 1rem;
-    color: white;
-    max-width: 700px;
-    margin: 0 auto 2rem auto;
-  }
-  
-  .homepage-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
-  }
-  
-  .info-block {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    max-width: 500px;
-    flex: 1 1 300px;
-    text-align: left;
-  }
-  
-  .info-block h3 {
-    margin-bottom: 0.75rem;
-    color: #0A475A;
-  }
-  
-  .info-block p,
-  .info-block ul {
-    color: #0A475A;
-    font-size: 0.95rem;
-  }
-  
-  .info-block ul {
-    padding-left: 1.2rem;
-  }
-  
-  .info-block ul li {
-    margin-bottom: 0.4rem;
-  }
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: var(--Blue);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 100vw;  
+}
+
+.homepage-header-carousel {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.homepage-main-layout {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  flex-grow: 1;
+  background-color: var(--Blue);
+  color: var(--text-color);
+  flex-wrap: wrap;
+}
+
+.weather-sidebar {
+  flex: 0 0 300px; 
+  background-color: var(--White);
+  color: var(--Blue);
+  border-radius: 10px;
+  padding: 1rem;
+  height: fit-content;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;  
+  top: 0;  
+}
+
+.homepage-main {
+  flex: 1;  
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.homepage-main h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--White);
+}
+
+.homepage-intro {
+  background-color: var(--White);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.homepage-intro h2 {
+  color: var(--Blue);
+  font-size: 1.8em;
+}
+
+.homepage-intro p {
+  color: var(--text-color);
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+.homepage-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  position: relative;
+}
+
+.homepage-event-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.info-block {
+  background: var(--White);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.info-block h3 {
+  color: var(--Blue);
+}
+
+.info-block p {
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+.event-list-homepage {
+  list-style: none;
+  padding: 0;
+}
+
+.homepage-event-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border-color);
+  gap: 10px;
+}
 
 .calendar-section {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--White);
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  color: var(--Blue);
+}
+
+.fc {
+  background-color: #f9fcff;
+  color: var(--Blue);
+  border-radius: 8px;
+}
+
+.fc-toolbar-title {
+  color: var(--Blue);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.fc-toolbar {
+  background-color: var(--text-color);
+  color: var(--Blue);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.fc-daygrid-day-number,
+.fc-timegrid-axis {
+  color: var(--Blue);
+  font-weight: bold;
+}
+
+.fc .fc-button:disabled {
+  background-color: var(--White);
+  color: var(--Blue);
+  border-color: var(--Grey);
+  cursor: pointer;
+}
+
+.fc .fc-button {
+  background-color: var(--White);
+  border-color: var(--Blue);
+  color: var(--Blue);
+}
+
+.fc .fc-button:hover,
+.fc .fc-button:focus {
+  background-color: var(--White);
+  border-color: var(--Blue);
+}
+
+.fc-timegrid-now-indicator-line {
+  background-color: var(--Blue);
+}
+
+.fc-day {
+  background-color: var(--White);
+  color: var(--Blue);
+}
+
+.fc-day:hover {
+  background-color: var(--grey);
+  color: var(--White);
+}
+
+.fc-day-today {
+  background-color: var(--White);
+  color: var(--Blue);
+}
+
+.homepage-footer {
+  background-color: black;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--White);
+}
+
+@media (max-width: 768px) {
+  .homepage-main-layout {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .weather-sidebar {
     width: 100%;
-    overflow-x: auto;
-    background-color: white;
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-  
-  .calendar-section h3 {
-    color: #0A475A;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    position: relative;  
   }
-  
-  .fc {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    font-size: 0.9rem;
-    color: #0A475A;
+
+  .homepage-info {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
-  
-  .fc .fc-toolbar-title {
-    font-size: 1.2rem;
-    color: #0A475A;
+
+  .calendar-section {
+    padding: 0.5rem;
   }
-  
-  .fc .fc-button {
-    background-color: #0A475A;
-    border-color: #0A475A;
-    color: white;
-    font-weight: bold;
+
+  .homepage-header-carousel {
+    height: 250px;
   }
-  
-  .fc .fc-button:hover {
-    background-color: #073642;
-    border-color: #073642;
-  }
-  
-  .fc .fc-daygrid-day-number {
-    color: #0A475A;
-    font-weight: bold;
-  }
-  
-  @media (max-width: 768px) {
-    .calendar-section {
-      padding: 0.5rem;
-    }
-  
-    .fc {
-      font-size: 0.75rem;
-    }
-  
-    .fc .fc-toolbar-title {
-      font-size: 1rem;
-    }
-  }
-  
-  .homepage-footer {
-    background-color: black;
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.875rem;
-    color: white;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-    margin-top: 3rem;
-  }
+}
+

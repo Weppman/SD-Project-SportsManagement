@@ -159,10 +159,10 @@ const triggerEmailNotification = async () => {
 
   return (
     <>
-     <Toolbar userType={userType} />
-     <AdminToolbar />
-     {userType === 'admin' && <AdminToolbar />}
-      <section id="admin-bookings-section">
+      <main id="admin-bookings-section">
+        <Toolbar userType={userType} />
+        <AdminToolbar />
+        {userType === 'admin' && <AdminToolbar />}
         <button id="auto-accept-button" data-testid="accept-all" onClick={handleAutoAccept}>Accept All Bookings</button>
         <label htmlFor="venue-filter" id="venue-filter-label">Filter by Venue:</label>
         <select 
@@ -236,7 +236,7 @@ const triggerEmailNotification = async () => {
           >
             Send Booking Reminders
         </button>
-      </section>
+      </main>
     </>
   );
 }
