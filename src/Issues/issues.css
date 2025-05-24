@@ -1,75 +1,105 @@
+.toolbar {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  width: 100%;
+  background-color: var(--White);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000; 
+  padding: 10px 20px;
+  box-sizing: border-box; 
+}
+
 .issues-container {
-    display: flex;
-    height: calc(100vh - 60px);
-    padding: 1rem;
-  }
-  
-  .issue-list {
-    flex: 3;
-    overflow-y: auto;
-    border-right: 1px solid #ccc;
-    padding-right: 1rem;
-  }
-  
-  .filter-section {
-    margin-bottom: 1rem;
-  }
-  
-  .filter-input {
-    margin-left: 0.5rem;
-    padding: 0.5rem;
-  }
-  
-  .filter-label {
-    margin-left: 1rem;
-  }
-  
-  .issues-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .issues-table th {
-    border-bottom: 1px solid #ccc;
-    text-align: left;
-    padding: 0.5rem;
-  }
-  
-  .issues-table td {
-    padding: 0.5rem;
-  }
-  
-  .no-issues {
-    padding: 1rem;
-    text-align: center;
-    color: #777;
-  }
-  
-  .report-form {
-    flex: 2;
-    padding: 1rem;
-    overflow-y: auto;
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .full-width-select,
-  .full-width-textarea {
-    width: 100%;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-  
-  .submit-button {
-    padding: 0.5rem 1rem;
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
+  margin-top: 30px; 
+  display: flex;
+  height: calc(100vh - 60px); 
+  padding: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 100vw;
+}
+
+.issue-list {
+  flex: 3;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+  padding-right: 1rem;
+}
+
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+.filter-input {
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+}
+
+.filter-label {
+  margin-left: 1rem;
+}
+
+.issues-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.issues-table th {
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+  padding: 0.5rem;
+}
+
+.issues-table td {
+  padding: 0.5rem;
+}
+
+.no-issues {
+  padding: 1rem;
+  text-align: center;
+  color: #777;
+}
+
+.report-form {
+  flex: 2;
+  padding: 1rem;
+  overflow-y: auto;
+  color: var(--White); 
+}
+
+.report-form label {
+  color: var(--White);
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+
+  color: var(--White) !important ;
+} 
+
+.full-width-select,
+.full-width-textarea {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.submit-button {
+  padding: 0.5rem 1rem;
+  width: 100%;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+

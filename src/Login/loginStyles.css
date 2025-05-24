@@ -1,7 +1,6 @@
-
 body {
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  background-color: #f4f7fc;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; /* Inherit from general if possible */
+  background-color: var(--light-grey); 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,37 +11,37 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 20px;
-  color: #0A475A;
+  color: var(--Blue); 
 }
 
 form {
-  background-color: white;
+  background-color: var(--White); 
   padding: 30px;
-  border-radius: 8px;
+  border-radius: 8px; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
 }
 
 input {
-  width: 100%;
+  width: calc(100% - 24px);
   padding: 12px;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color); 
   border-radius: 5px;
   font-size: 16px;
 }
 
 input:focus {
-  border-color: #0A475A;
+  border-color: var(--Blue); 
   outline: none;
 }
 
 button {
   width: 100%;
   padding: 12px;
-  background-color: #0A475A;
-  color: white;
+  background-color: var(--Blue); 
+  color: var(--White); 
   font-size: 16px;
   border: none;
   border-radius: 5px;
@@ -51,23 +50,24 @@ button {
 }
 
 button:hover {
-  background-color: #011d25;
+  background-color: #011d25; 
 }
 
 button:disabled {
-  background-color: #aaa;
+  background-color: var(--Grey);
+  cursor: not-allowed; 
 }
 
 button[type="button"] {
   background-color: transparent;
-  color: #0A475A;
-  border: 1px solid #0A475A;
+  color: var(--Blue); 
+  border: 1px solid var(--Blue);
   margin-top: 10px;
 }
 
 button[type="button"]:hover {
-  background-color: #011d25;
-  color: white;
+  background-color: var(--Blue); 
+  color: var(--White); 
 }
 
 .google-signin {
@@ -79,8 +79,8 @@ button[type="button"]:hover {
 .google-signin button {
   width: 100%;
   padding: 12px;
-  background-color: #db4437;
-  color: white;
+  background-color: var(--error-color); 
+  color: var(--White); 
   font-size: 16px;
   border: none;
   border-radius: 5px;
@@ -89,18 +89,18 @@ button[type="button"]:hover {
 }
 
 .google-signin button:hover {
-  background-color: #c1351d;
+  background-color: #c1351d; 
 }
 
 footer {
   text-align: center;
   margin-top: 20px;
-  color: #555;
+  color: var(--text-color);
   font-size: 14px;
 }
 
 footer a {
-  color: #4a90e2;
+  color: var(--Blue); 
   text-decoration: none;
 }
 

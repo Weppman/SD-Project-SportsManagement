@@ -74,9 +74,36 @@ export default function Users() {
 
   return (
     <>
-      <Toolbar />
-      <AdminToolbar />
-      <section className="main-container">
+      <main className="main-container">
+        <Toolbar />
+        <AdminToolbar />
+         <section className="update-section">
+          <h2>{selectedUser ? 'Update User' : 'Select a User to Update'}</h2>
+          {selectedUser && (
+            <>
+              <section>
+                <label htmlFor="role">Role:</label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="role-select"
+                >
+                  <option value="user">user</option>
+                  <option value="staff">staff</option>
+                  <option value="admin">admin</option>
+                </select>
+              </section>
+              <button
+                onClick={handleUpdate}
+                className="update-button"
+                data-testid="update-button"
+              >
+                Update User
+              </button>
+            </>
+          )}
+        </section>
         <section className="user-list-section">
           <h2>User List</h2>
           <table>
@@ -110,34 +137,7 @@ export default function Users() {
           </table>
         </section>
 
-        <section className="update-section">
-          <h2>{selectedUser ? 'Update User' : 'Select a User to Update'}</h2>
-          {selectedUser && (
-            <>
-              <section>
-                <label htmlFor="role">Role:</label>
-                <select
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className="role-select"
-                >
-                  <option value="user">user</option>
-                  <option value="staff">staff</option>
-                  <option value="admin">admin</option>
-                </select>
-              </section>
-              <button
-                onClick={handleUpdate}
-                className="update-button"
-                data-testid="update-button"
-              >
-                Update User
-              </button>
-            </>
-          )}
-        </section>
-      </section>
+      </main>
     </>
   );
 }
