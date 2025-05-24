@@ -264,7 +264,7 @@ const downloadPDF = () => {
             Usage by Time Slot
           </label>
         </header>
-        <label style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "10px" }}>
+        <label className = "checkbox-label">
           <input
             type="checkbox"
             checked={isStacked}
@@ -272,7 +272,7 @@ const downloadPDF = () => {
           />
             Show as Stacked
         </label>
-        <label style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginBottom: "10px" }}>
+        <label className = "checkbox-label">
         <input
             type="checkbox"
             checked={showPercentages}
@@ -351,7 +351,7 @@ const downloadPDF = () => {
               ))}
           </section>
         {showTimeSlotGraph && timeSlotSummary?.mostBooked && (
-          <section data-testid= 'time-slot' style={{ textAlign: "center", marginTop: "20px" }}>
+          <section data-testid= 'time-slot'>
             <p className="summary-text"><strong>Most Booked Time Slot:</strong> {timeSlotSummary.mostBooked.timeSlot} ({timeSlotSummary.mostBooked.total} bookings)</p>
             <p className="summary-text"><strong>Least Booked Time Slot:</strong> {timeSlotSummary.leastBooked.timeSlot} ({timeSlotSummary.leastBooked.total} bookings)</p>
             <p className="summary-text"><strong>Morning Total:</strong> {timeSlotSummary?.morningTotal}</p>

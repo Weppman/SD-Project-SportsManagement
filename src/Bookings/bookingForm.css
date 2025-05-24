@@ -102,7 +102,7 @@
     border-radius: 20px;
     height: 80%; 
   }
-  .popup-container label {
+  .popup-container label{
     display: flex;
     flex-direction: column; 
     width: 100%;
@@ -128,7 +128,7 @@
   .venue-selector label {
     font-size: 16px;
     font-weight: bold;
-    color: #333;
+    color: #ffffff;
   }
   .venue-selector select {
     padding: 10px;
@@ -170,3 +170,19 @@
     color: #6a6b6b !important;             
     cursor: not-allowed !important;        
   }
+  #popup-section{
+    width: 50%;
+    padding: 10px;
+    background-color: #ffffff;
+  }
+  #booking-main{
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+ #calender-section{
+  padding: 10px;
+ }
+ #popup-footer{
+  margin-top: 1rem;
+ }
