@@ -100,7 +100,7 @@ const HomePage = () => {
   return (
     <main className="homepage-container">
       <Toolbar />
-      <section className="homepage-header-carousel">
+      <section data-testid="homepage-carousel" className="homepage-header-carousel">
         <img src={imagePaths[currentImage]} className="carousel-image" alt="Sports facility" />
       </section>
       <section className="homepage-main-layout">
