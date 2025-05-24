@@ -30,8 +30,6 @@ const safeDateConversion = (timestamp) => {
 
 const HomePage = () => {
   const { userType, user } = useUser();
-
-
   const [bookings, setBookings] = useState([]);
   const [events, setEvents] = useState([]);
   const [issues, setIssues] = useState([]);
@@ -62,11 +60,17 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-  if (user && users.length > 0) {
-    const currentUser = users.find(u => u.uid === user);
-    if (currentUser) setUserName(currentUser.displayName);
-  }
-}, [user, users]);
+    if (user && users.length > 0) {
+      const currentUser = users.find(u => u.uid === user);
+      if (currentUser) {
+        setUserName(currentUser.displayName);
+      } else {
+        setUserName('User'); // fallback if no matching user found
+      }
+    } else {
+      setUserName('User'); // reset name on logout or when user is null
+    }
+  }, [user, users]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -143,9 +147,9 @@ const HomePage = () => {
           {userType !== 'default' && (
             <section className="homepage-info">
               <article className="info-block">
-                <h3>Upcoming Events</h3>
+                <h3>Upcoming Event</h3>
                 {loading ? (
-                  <p>Loading events...</p>
+                  <p>Loading event...</p>
                 ) : events.length > 0 ? (
                   <ul className="event-list-homepage">
                     {events.map(event => (
