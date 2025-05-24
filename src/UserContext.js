@@ -13,9 +13,10 @@ export const useUser = () => {
 export const UserProvider = ({ children }) => {
   const [basename] = useState('default'); // Example value for basename
   const [userType, setUserType] = useState('default'); // Example value for userType
+  const [user, setUser] = useState(null); // State to hold user data
 
   return (
-    <UserContext.Provider value={{ basename, userType, setUserType }}>
+    <UserContext.Provider value={{ basename, userType, setUserType, user, setUser }}>
       {children}
     </UserContext.Provider>
   );
