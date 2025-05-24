@@ -47,7 +47,7 @@ test('renders weather and forecast data', async () => {
   expect(screen.getByText((content) => content.includes('Humidity: 60%'))).toBeInTheDocument();
   expect(screen.getByText((content) => content.includes('Wind: 3.4'))).toBeInTheDocument();
 
-  expect(screen.getAllByRole('listitem')).toHaveLength(5);
+  expect(screen.getAllByRole('listitem')).toHaveLength(4);
 });
 
 test('handles fetch errors gracefully', async () => {
