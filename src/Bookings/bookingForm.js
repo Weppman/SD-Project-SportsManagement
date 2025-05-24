@@ -256,6 +256,7 @@ const BookingForm = () => {
                   <strong>Number of People:</strong>
                   <input
                     id="people"
+                    data-testid="people-input"
                     type="number"
                     value={numberOfPeople}
                     onChange={(e) => setNumberOfPeople(e.target.value)}
