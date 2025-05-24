@@ -5,6 +5,12 @@ import AdminToolbar from '../Admin/adminToolBar';
 import { Timestamp } from 'firebase/firestore';
 import '../CSS/events.css';
 
+const toDatetimeLocal = (date) => {
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+
 export default function Events() {
   const { userType } = useUser();
   const [events, setEvents] = useState([]);
@@ -94,6 +100,8 @@ export default function Events() {
     if (editingEvent) {
       eventData.id = editingEvent.id;
     }
+
+
 
     try {
       const response = await fetch('https://getupdateevent-mokwbj4tsa-uc.a.run.app', {
@@ -240,7 +248,7 @@ export default function Events() {
                   <input
                     type="datetime-local"
                     id="startDate"
-                    value={startDate.toISOString().slice(0, 16)}
+                    value={toDatetimeLocal(startDate)}
                     onChange={(e) => setStartDate(new Date(e.target.value))}
                     required
                   />
@@ -250,7 +258,7 @@ export default function Events() {
                   <input
                     type="datetime-local"
                     id="endDate"
-                    value={endDate.toISOString().slice(0, 16)}
+                    value={toDatetimeLocal(endDate)}
                     onChange={(e) => setEndDate(new Date(e.target.value))}
                     required
                   />
@@ -307,4 +315,5 @@ export default function Events() {
       </main>
     </>
   );
+  
 }
