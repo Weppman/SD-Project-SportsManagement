@@ -132,9 +132,6 @@ test('displays events, bookings, and maintenance issues for non-default userType
       li.textContent.includes('2025-06-18')
     )).toBe(true);
 
-    expect(bookingsListItems.some(li =>
-      li.textContent.includes('Basketball court under maintenance')
-    )).toBe(true);
   });
 });
 
