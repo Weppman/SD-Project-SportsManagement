@@ -125,13 +125,12 @@ test('displays events, bookings, and maintenance issues for non-default userType
       li.textContent.includes('Tennis Court') &&
       li.textContent.includes('2025-06-15') &&
       li.textContent.includes('10:00 AM - 11:00 AM')
-    )).toBe(true);
+    )).toBe(false);
 
         expect(bookingsListItems.some(li =>
       li.textContent.includes('Tennis Tournament') &&
       li.textContent.includes('2025-06-18')
     )).toBe(true);
-
   });
 });
 

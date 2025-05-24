@@ -28,8 +28,12 @@ describe('GoogleSignIn Component', () => {
 
   beforeEach(() => {
     mockSetUserType = jest.fn();
+    mockSetUser = jest.fn();
     mockNavigate = jest.fn();
-    useUser.mockReturnValue({ setUserType: mockSetUserType });
+    useUser.mockReturnValue({
+      setUserType: mockSetUserType,
+      setUser: mockSetUser,
+    });
     useNavigate.mockReturnValue(mockNavigate);
 
     jest.spyOn(console, 'error').mockImplementation(() => {});

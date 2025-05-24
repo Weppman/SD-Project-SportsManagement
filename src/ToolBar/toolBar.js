@@ -8,7 +8,7 @@ import { auth } from '../Firebase/firebaseApp';
 const navStyle = {
   display: 'flex',
   gap: '1.5rem',
-  fontWeight: 'bold',  // fixed typo
+  fontWeight: 'bold', 
   padding: '0.5rem',
 };
 
