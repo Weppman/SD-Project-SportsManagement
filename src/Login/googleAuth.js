@@ -7,7 +7,7 @@ import './loginStyles.css';
 
 const GoogleSignIn = () => {
   const navigate = useNavigate();
-  const { setUserType } = useUser();
+  const { setUserType, setUser } = useUser();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -15,6 +15,7 @@ const GoogleSignIn = () => {
       if (result.user) {
         const user = result.user;
         const uid = user.uid;
+        setUser(uid);
 
         const response = await fetch(`https://getuserdatauuid-mokwbj4tsa-uc.a.run.app?UUID=${uid}`); 
 

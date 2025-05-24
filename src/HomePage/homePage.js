@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Toolbar from '../ToolBar/toolBar';
 import WeatherWidget from '../HomePage/weather';
 import { useUser } from '../UserContext';
@@ -30,6 +30,8 @@ const safeDateConversion = (timestamp) => {
 
 const HomePage = () => {
   const { userType, user } = useUser();
+
+
   const [bookings, setBookings] = useState([]);
   const [events, setEvents] = useState([]);
   const [issues, setIssues] = useState([]);
@@ -49,18 +51,19 @@ const HomePage = () => {
           displayName: user.displayName,
           UserType: user.UserType || 'user',
         }));
+
         setUsers(enrichedUsers);
       } catch (error) {
-        console.error(error);
+
       }
     };
-
     fetchUsers();
   }, []);
 
   useEffect(() => {
     if (user && users.length > 0) {
       const currentUser = users.find(u => u.id === user.uid);
+
       if (currentUser) setUserName(currentUser.displayName);
     }
   }, [user, users]);
@@ -71,22 +74,25 @@ const HomePage = () => {
       try {
         const bookingsResponse = await fetch('https://getacceptedfuturebookings-mokwbj4tsa-uc.a.run.app');
         const bookingsData = await bookingsResponse.json();
+
         setBookings(bookingsData.bookings || []);
 
         const eventsResponse = await fetch('https://geteventdata-mokwbj4tsa-uc.a.run.app');
         const eventsData = await eventsResponse.json();
+
         setEvents(eventsData.filter(event => event.status !== 'deleted') || []);
 
         const issuesResponse = await fetch('https://getresolved3days-mokwbj4tsa-uc.a.run.app');
         const issuesData = await issuesResponse.json();
-        setIssues(issuesData.issues || []);
+
+        setIssues(Array.isArray(issuesData) ? issuesData : (issuesData.issues || []));
+
       } catch (error) {
-        console.error('Data fetch error:', error);
+
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -96,6 +102,20 @@ const HomePage = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  // ✅ Debug filtered bookings
+  const userBookings = useMemo(() => {
+    if (!user || !bookings) {
+      return [];
+    }
+
+    const filtered = bookings.filter(b => {
+
+      return b.UID === user;
+    });
+
+    return filtered;
+  }, [bookings, user]);
 
   return (
     <main className="homepage-container">
@@ -119,6 +139,7 @@ const HomePage = () => {
               spirit come alive.
             </p>
           </section>
+
           {userType !== 'default' && (
             <section className="homepage-info">
               <article className="info-block">
@@ -145,6 +166,7 @@ const HomePage = () => {
                   <p>No upcoming events.</p>
                 )}
               </article>
+
               <article className="info-block">
                 <h3>Maintenance Alerts</h3>
                 {loading ? (
@@ -159,31 +181,35 @@ const HomePage = () => {
                   <p>No maintenance notices.</p>
                 )}
               </article>
+
               <article className="info-block">
                 <h3>Your Bookings</h3>
                 {loading ? (
                   <p>Loading your bookings...</p>
-                ) : bookings.filter(b => b.userId === user?.uid).length > 0 ? (
-                  <ul>
-                    {bookings
-                      .filter(booking => booking.userId === user?.uid)
-                      .map(booking => (
-                        <li key={booking.id}>
-                          {booking.venueID} on {safeDateConversion(booking.date)} at {booking.timeSlot}
-                        </li>
-                      ))}
-                  </ul>
                 ) : (
-                  <p>No bookings found.</p>
+                  <>
+                    {userBookings.length > 0 ? (
+                      <ul>
+                        {userBookings.map(booking => (
+                          <li key={booking.id}>
+                            {booking.venueID} on {safeDateConversion(booking.date)} at {booking.timeSlot}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>No bookings found.</p>
+                    )}
+                  </>
                 )}
               </article>
+
               <article className="info-block calendar-section">
                 <h3>Booking Calendar</h3>
                 <FullCalendar
                   plugins={[dayGridPlugin]}
                   initialView="dayGridMonth"
                   events={[
-                    ...bookings.map(b => ({
+                    ...userBookings.map(b => ({
                       title: b.venueID,
                       date: safeDateConversion(b.date),
                       backgroundColor: '#0A475A',
