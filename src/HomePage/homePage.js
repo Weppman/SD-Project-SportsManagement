@@ -48,6 +48,7 @@ const HomePage = () => {
         const data = await response.json();
         const enrichedUsers = data.users.map(user => ({
           id: user.id,
+          uid: user.uid,
           displayName: user.displayName,
           UserType: user.UserType || 'user',
         }));
@@ -61,12 +62,11 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    if (user && users.length > 0) {
-      const currentUser = users.find(u => u.id === user.uid);
-
-      if (currentUser) setUserName(currentUser.displayName);
-    }
-  }, [user, users]);
+  if (user && users.length > 0) {
+    const currentUser = users.find(u => u.uid === user);
+    if (currentUser) setUserName(currentUser.displayName);
+  }
+}, [user, users]);
 
   useEffect(() => {
     const fetchData = async () => {
